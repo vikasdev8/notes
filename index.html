@@ -1,303 +1,626 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PySpark & Pandas Interview Questions — 4 YOE</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root[data-theme="dark"] {
-  --bg: #0f1117;
-  --bg-card: #1a1d27;
-  --bg-code: #12141c;
-  --bg-hover: #21253a;
-  --border: #2a2d3e;
-  --border-accent: #3a3d52;
-  --text-primary: #e8eaf6;
-  --text-secondary: #9fa3c7;
-  --text-muted: #5c6080;
-  --accent: #7c7fff;
-  --accent-glow: rgba(124,127,255,0.15);
-  --fire: #ff7b54;
-  --fire-bg: rgba(255,123,84,0.12);
-  --mid: #54c8ff;
-  --mid-bg: rgba(84,200,255,0.12);
-  --adv: #b67cff;
-  --adv-bg: rgba(182,124,255,0.12);
-  --green: #4ade80;
-  --green-bg: rgba(74,222,128,0.12);
-  --star: #f9c74f;
-  --scrollbar: #2a2d3e;
-}
-:root[data-theme="light"] {
-  --bg: #f4f5fb;
-  --bg-card: #ffffff;
-  --bg-code: #f0f1fa;
-  --bg-hover: #eef0fc;
-  --border: #e0e2f0;
-  --border-accent: #c8cbe8;
-  --text-primary: #1a1d35;
-  --text-secondary: #4a4e72;
-  --text-muted: #8a8fb5;
-  --accent: #5254d4;
-  --accent-glow: rgba(82,84,212,0.1);
-  --fire: #e05a1e;
-  --fire-bg: rgba(224,90,30,0.08);
-  --mid: #0d7fb5;
-  --mid-bg: rgba(13,127,181,0.08);
-  --adv: #7c2fbf;
-  --adv-bg: rgba(124,47,191,0.08);
-  --green: #16a34a;
-  --green-bg: rgba(22,163,74,0.08);
-  --star: #d97706;
-  --scrollbar: #e0e2f0;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  font-family:'Sora',sans-serif;
-  background:var(--bg);
-  color:var(--text-primary);
-  min-height:100vh;
-  line-height:1.6;
-}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:3px}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PySpark & Pandas Interview Questions — 4 YOE</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root[data-theme="dark"] {
+      --bg: #0f1117;
+      --bg-card: #1a1d27;
+      --bg-code: #12141c;
+      --bg-hover: #21253a;
+      --border: #2a2d3e;
+      --border-accent: #3a3d52;
+      --text-primary: #e8eaf6;
+      --text-secondary: #9fa3c7;
+      --text-muted: #5c6080;
+      --accent: #7c7fff;
+      --accent-glow: rgba(124, 127, 255, 0.15);
+      --fire: #ff7b54;
+      --fire-bg: rgba(255, 123, 84, 0.12);
+      --mid: #54c8ff;
+      --mid-bg: rgba(84, 200, 255, 0.12);
+      --adv: #b67cff;
+      --adv-bg: rgba(182, 124, 255, 0.12);
+      --green: #4ade80;
+      --green-bg: rgba(74, 222, 128, 0.12);
+      --star: #f9c74f;
+      --scrollbar: #2a2d3e;
+    }
 
-.page{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+    :root[data-theme="light"] {
+      --bg: #f4f5fb;
+      --bg-card: #ffffff;
+      --bg-code: #f0f1fa;
+      --bg-hover: #eef0fc;
+      --border: #e0e2f0;
+      --border-accent: #c8cbe8;
+      --text-primary: #1a1d35;
+      --text-secondary: #4a4e72;
+      --text-muted: #8a8fb5;
+      --accent: #5254d4;
+      --accent-glow: rgba(82, 84, 212, 0.1);
+      --fire: #e05a1e;
+      --fire-bg: rgba(224, 90, 30, 0.08);
+      --mid: #0d7fb5;
+      --mid-bg: rgba(13, 127, 181, 0.08);
+      --adv: #7c2fbf;
+      --adv-bg: rgba(124, 47, 191, 0.08);
+      --green: #16a34a;
+      --green-bg: rgba(22, 163, 74, 0.08);
+      --star: #d97706;
+      --scrollbar: #e0e2f0;
+    }
 
-.header{margin-bottom:2rem}
-.header-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:.5rem}
-.title{font-size:22px;font-weight:600;letter-spacing:-.02em}
-.title span{color:var(--accent)}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-.theme-toggle{
-  display:flex;align-items:center;gap:8px;
-  background:var(--bg-card);border:1px solid var(--border);
-  border-radius:24px;padding:4px;cursor:pointer
-}
-.theme-btn{
-  padding:5px 14px;border-radius:20px;font-size:12px;font-family:'Sora',sans-serif;
-  font-weight:500;border:none;cursor:pointer;transition:all .2s;
-  background:transparent;color:var(--text-muted)
-}
-.theme-btn.active{background:var(--accent);color:#fff}
+    html {
+      scroll-behavior: smooth
+    }
 
-.subtitle{font-size:13px;color:var(--text-muted)}
+    body {
+      font-family: 'Sora', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
 
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:1.75rem}
-.stat{
-  background:var(--bg-card);border:1px solid var(--border);
-  border-radius:12px;padding:14px 12px;text-align:center
-}
-.stat-num{font-size:24px;font-weight:600;color:var(--accent)}
-.stat-label{font-size:11px;color:var(--text-muted);margin-top:3px;font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px
+    }
 
-.tabs{display:flex;gap:8px;margin-bottom:1.5rem;background:var(--bg-card);padding:6px;border-radius:14px;border:1px solid var(--border)}
-.tab{
-  flex:1;padding:9px 20px;border-radius:10px;border:none;
-  font-family:'Sora',sans-serif;font-size:14px;font-weight:500;
-  cursor:pointer;transition:all .2s;
-  background:transparent;color:var(--text-muted)
-}
-.tab.active{background:var(--accent);color:#fff;box-shadow:0 2px 12px var(--accent-glow)}
+    ::-webkit-scrollbar-track {
+      background: transparent
+    }
 
-.panel{display:none}
-.panel.active{display:block}
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar);
+      border-radius: 3px
+    }
 
-.section{margin-bottom:2rem}
-.section-title{
-  display:flex;align-items:center;gap:10px;
-  font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;
-  color:var(--text-muted);margin-bottom:1rem;padding-bottom:.75rem;
-  border-bottom:1px solid var(--border)
-}
-.badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
-.badge-fire{background:var(--fire-bg);color:var(--fire)}
-.badge-mid{background:var(--mid-bg);color:var(--mid)}
-.badge-adv{background:var(--adv-bg);color:var(--adv)}
-.badge-new{background:var(--green-bg);color:var(--green)}
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem
+    }
 
-.q-card{
-  background:var(--bg-card);border:1px solid var(--border);
-  border-radius:12px;margin-bottom:8px;overflow:hidden;
-  transition:border-color .2s,box-shadow .2s
-}
-.q-card:hover{border-color:var(--border-accent);box-shadow:0 0 0 1px var(--accent-glow)}
-.q-card.open{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent-glow)}
+    .header {
+      margin-bottom: 2rem
+    }
 
-.q-header{
-  display:flex;justify-content:space-between;align-items:flex-start;
-  padding:14px 16px;gap:12px;cursor:pointer;
-  transition:background .15s
-}
-.q-header:hover{background:var(--bg-hover)}
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: .5rem
+    }
 
-.q-left{flex:1}
-.q-text{font-size:14px;color:var(--text-primary);line-height:1.5;font-weight:500}
-.q-text code{
-  background:var(--bg-code);padding:2px 6px;border-radius:5px;
-  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);
-  border:1px solid var(--border)
-}
-.freq{font-size:11px;color:var(--star);margin-top:4px}
-.q-toggle{
-  font-size:20px;color:var(--text-muted);flex-shrink:0;
-  transition:transform .25s,color .2s;line-height:1
-}
-.q-card.open .q-toggle{transform:rotate(45deg);color:var(--accent)}
-.q-answer{
-  display:none;padding:4px 16px 16px;
-  border-top:1px solid var(--border)
-}
-.q-card.open .q-answer{display:block}
+    .title {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -.02em
+    }
 
-.q-answer p{font-size:13px;color:var(--text-secondary);line-height:1.75;margin-top:12px}
-.q-answer b{color:var(--text-primary);font-weight:600}
-.q-answer code{
-  background:var(--bg-code);padding:2px 6px;border-radius:5px;
-  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);
-  border:1px solid var(--border)
-}
-pre{
-  background:var(--bg-code);border:1px solid var(--border);
-  border-radius:10px;padding:14px 16px;margin-top:12px;
-  overflow-x:auto;font-family:'JetBrains Mono',monospace;
-  font-size:12px;color:var(--text-primary);line-height:1.7;
-  position:relative
-}
-.new-badge{
-  display:inline-block;font-size:10px;font-weight:700;
-  padding:2px 7px;border-radius:10px;vertical-align:middle;margin-left:8px;
-  background:var(--green-bg);color:var(--green);letter-spacing:.05em;text-transform:uppercase
-}
+    .title span {
+      color: var(--accent)
+    }
 
-.search-wrap{position:relative;margin-bottom:1.25rem}
-.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted)}
-#search{
-  width:100%;padding:10px 12px 10px 38px;
-  background:var(--bg-card);border:1px solid var(--border);
-  border-radius:10px;color:var(--text-primary);
-  font-family:'Sora',sans-serif;font-size:14px;outline:none;
-  transition:border-color .2s
-}
-#search:focus{border-color:var(--accent)}
-#search::placeholder{color:var(--text-muted)}
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 4px;
+      cursor: pointer
+    }
 
-.no-results{text-align:center;padding:2rem;color:var(--text-muted);font-size:14px}
+    .theme-btn {
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-family: 'Sora', sans-serif;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+      background: transparent;
+      color: var(--text-muted)
+    }
 
-.progress-bar{
-  height:3px;background:var(--border);border-radius:2px;margin-bottom:1.5rem;overflow:hidden
-}
-.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s}
+    .theme-btn.active {
+      background: var(--accent);
+      color: #fff
+    }
 
-@media(max-width:600px){
-  .page{padding:1rem}
-  .title{font-size:18px}
-  .stats{grid-template-columns:repeat(2,1fr)}
-}
-</style>
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-muted)
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 10px;
+      margin-bottom: 1.75rem
+    }
+
+    .stat {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 12px;
+      text-align: center
+    }
+
+    .stat-num {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--accent)
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 3px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .06em
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+      background: var(--bg-card);
+      padding: 6px;
+      border-radius: 14px;
+      border: 1px solid var(--border)
+    }
+
+    .tab {
+      flex: 1;
+      padding: 9px 20px;
+      border-radius: 10px;
+      border: none;
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+      background: transparent;
+      color: var(--text-muted)
+    }
+
+    .tab.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 12px var(--accent-glow)
+    }
+
+    .panel {
+      display: none
+    }
+
+    .panel.active {
+      display: block
+    }
+
+    .section {
+      margin-bottom: 2rem
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      padding-bottom: .75rem;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px
+    }
+
+    .badge-fire {
+      background: var(--fire-bg);
+      color: var(--fire)
+    }
+
+    .badge-mid {
+      background: var(--mid-bg);
+      color: var(--mid)
+    }
+
+    .badge-adv {
+      background: var(--adv-bg);
+      color: var(--adv)
+    }
+
+    .badge-new {
+      background: var(--green-bg);
+      color: var(--green)
+    }
+
+    .q-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      overflow: hidden;
+      transition: border-color .2s, box-shadow .2s
+    }
+
+    .q-card:hover {
+      border-color: var(--border-accent);
+      box-shadow: 0 0 0 1px var(--accent-glow)
+    }
+
+    .q-card.open {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent-glow)
+    }
+
+    .q-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 14px 16px;
+      gap: 12px;
+      cursor: pointer;
+      transition: background .15s
+    }
+
+    .q-header:hover {
+      background: var(--bg-hover)
+    }
+
+    .q-left {
+      flex: 1
+    }
+
+    .q-text {
+      font-size: 14px;
+      color: var(--text-primary);
+      line-height: 1.5;
+      font-weight: 500
+    }
+
+    .q-text code {
+      background: var(--bg-code);
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      border: 1px solid var(--border)
+    }
+
+    .freq {
+      font-size: 11px;
+      color: var(--star);
+      margin-top: 4px
+    }
+
+    .q-toggle {
+      font-size: 20px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      transition: transform .25s, color .2s;
+      line-height: 1
+    }
+
+    .q-card.open .q-toggle {
+      transform: rotate(45deg);
+      color: var(--accent)
+    }
+
+    .q-answer {
+      display: none;
+      padding: 4px 16px 16px;
+      border-top: 1px solid var(--border)
+    }
+
+    .q-card.open .q-answer {
+      display: block
+    }
+
+    .q-answer p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin-top: 12px
+    }
+
+    .q-answer b {
+      color: var(--text-primary);
+      font-weight: 600
+    }
+
+    .q-answer code {
+      background: var(--bg-code);
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      border: 1px solid var(--border)
+    }
+
+    pre {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-top: 12px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-primary);
+      line-height: 1.7;
+      position: relative
+    }
+
+    .new-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      vertical-align: middle;
+      margin-left: 8px;
+      background: var(--green-bg);
+      color: var(--green);
+      letter-spacing: .05em;
+      text-transform: uppercase
+    }
+
+    .search-wrap {
+      position: relative;
+      margin-bottom: 1.25rem
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted)
+    }
+
+    #search {
+      width: 100%;
+      padding: 10px 12px 10px 38px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .2s
+    }
+
+    #search:focus {
+      border-color: var(--accent)
+    }
+
+    #search::placeholder {
+      color: var(--text-muted)
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      font-size: 14px
+    }
+
+    .progress-bar {
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-bottom: 1.5rem;
+      overflow: hidden
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width .4s
+    }
+
+    @media(max-width:600px) {
+      .page {
+        padding: 1rem
+      }
+
+      .title {
+        font-size: 18px
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="page">
+  <div class="page">
 
-  <div class="header">
-    <div class="header-top">
-      <div class="title">PySpark & Pandas <span>Interview Kit</span></div>
-      <div class="theme-toggle" onclick="toggleTheme()">
-        <button class="theme-btn" id="btn-dark" onclick="setTheme('dark',event)">🌙 Dark</button>
-        <button class="theme-btn active" id="btn-light" onclick="setTheme('light',event)">☀️ Light</button>
-      </div>
-    </div>
-    <div class="subtitle">4 Years Experience · Now covers join strategies, bucketing, AQE · Click any card to reveal answer</div>
-  </div>
-
-  <div class="stats">
-    <div class="stat"><div class="stat-num" id="s-total">51</div><div class="stat-label">Total Qs</div></div>
-    <div class="stat"><div class="stat-num" id="s-opened">0</div><div class="stat-label">Reviewed</div></div>
-    <div class="stat"><div class="stat-num">4 YOE</div><div class="stat-label">Level</div></div>
-    <div class="stat"><div class="stat-num">🆕 16</div><div class="stat-label">New / Updated</div></div>
-  </div>
-
-  <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
-
-  <div class="search-wrap">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input id="search" type="text" placeholder="Search questions..." oninput="filterSearch(this.value)">
-  </div>
-
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('pyspark',event)">⚡ PySpark (25+)</button>
-    <button class="tab" onclick="switchTab('pandas',event)">🐼 Pandas (20+)</button>
-  </div>
-
-  <!-- ======================== PYSPARK PANEL ======================== -->
-  <div id="panel-pyspark" class="panel active">
-
-    <div class="section">
-      <div class="section-title"><span class="badge badge-fire">🔥 Most Asked</span> Core Concepts</div>
-
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">Explain all types of joins in PySpark.<span class="new-badge">UPDATED</span></div><div class="freq">★★★★★ Join concepts</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p>PySpark supports several join types. Here is a simple guide:</p>
-          <p><b>1. Inner Join (<code>how="inner"</code>)</b>: Default. Keeps only matching rows from both sides.</p>
-          <pre>df1.join(df2, on="id", how="inner")</pre>
-          <p><b>2. Left Join (<code>how="left"</code>)</b>: Keeps all left rows, plus matching right rows. Unmatched right data becomes null.</p>
-          <pre>df1.join(df2, on="id", how="left")</pre>
-          <p><b>3. Right Join (<code>how="right"</code>)</b>: Keeps all right rows, plus matching left rows.</p>
-          <pre>df1.join(df2, on="id", how="right")</pre>
-          <p><b>4. Full Outer Join (<code>how="outer"</code>)</b>: Keeps all rows from both sides. Also called <code>full</code> or <code>fullouter</code>.</p>
-          <pre>df1.join(df2, on="id", how="outer")</pre>
-          <p><b>5. Left Semi Join (<code>how="leftsemi"</code>)</b>: Keeps left rows that match the right. <b>No</b> right columns are added.</p>
-          <pre>df1.join(df2, on="id", how="leftsemi")</pre>
-          <p><b>6. Left Anti Join (<code>how="leftanti"</code>)</b>: Keeps left rows that do <b>not</b> match the right.</p>
-          <pre>df1.join(df2, on="id", how="leftanti")</pre>
-          <p><b>7. Cross Join</b>: Matches every left row with every right row. This creates a very large dataset.</p>
-          <pre>df1.crossJoin(df2)</pre>
+    <div class="header">
+      <div class="header-top">
+        <div class="title">PySpark & Pandas <span>Interview Kit</span></div>
+        <div class="theme-toggle" onclick="toggleTheme()">
+          <button class="theme-btn" id="btn-dark" onclick="setTheme('dark',event)">🌙 Dark</button>
+          <button class="theme-btn active" id="btn-light" onclick="setTheme('light',event)">☀️ Light</button>
         </div>
       </div>
+      <div class="subtitle">4 Years Experience · Now covers join strategies, bucketing, AQE · Click any card to reveal
+        answer</div>
+    </div>
 
-      <!-- NEW: Join Strategies -->
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What are the different join strategies in PySpark? Explain with examples.<span class="new-badge">NEW</span></div><div class="freq">★★★★★ Execution internals</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b>Join strategy</b> determines <i>how</i> Spark physically executes a join. Spark's Catalyst optimizer picks the best strategy based on table sizes and hints. There are 5 strategies:</p>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="s-total">54</div>
+        <div class="stat-label">Total Qs</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="s-opened">0</div>
+        <div class="stat-label">Reviewed</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">4 YOE</div>
+        <div class="stat-label">Level</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">🆕 16</div>
+        <div class="stat-label">New / Updated</div>
+      </div>
+    </div>
 
-          <p><b>1. Broadcast Hash Join (BHJ)</b> — Best for joining a <b>small dataset with a large one</b>. The smaller dataset is <b>broadcasted to every executor node</b>, where it is <b>hashed</b> and then joined with the locally held partition of the large dataset. No shuffle of the large side is needed — the join happens entirely locally on each executor.</p>
-          <pre>from pyspark.sql.functions import broadcast
+    <div class="progress-bar">
+      <div class="progress-fill" id="prog" style="width:0%"></div>
+    </div>
+
+    <div class="search-wrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.35-4.35" />
+      </svg>
+      <input id="search" type="text" placeholder="Search questions..." oninput="filterSearch(this.value)">
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('pyspark',event)">⚡ PySpark (25+)</button>
+      <button class="tab" onclick="switchTab('pandas',event)">🐼 Pandas (20+)</button>
+    </div>
+
+    <!-- ======================== PYSPARK PANEL ======================== -->
+    <div id="panel-pyspark" class="panel active">
+
+      <div class="section">
+        <div class="section-title"><span class="badge badge-fire">🔥 Most Asked</span> Core Concepts</div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">Explain all types of joins in PySpark.<span class="new-badge">UPDATED</span></div>
+              <div class="freq">★★★★★ Join concepts</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>PySpark supports several join types. Here is a simple guide:</p>
+            <p><b>1. Inner Join (<code>how="inner"</code>)</b>: Default. Keeps only matching rows from both sides.</p>
+            <pre>df1.join(df2, on="id", how="inner")</pre>
+            <p><b>2. Left Join (<code>how="left"</code>)</b>: Keeps all left rows, plus matching right rows. Unmatched
+              right data becomes null.</p>
+            <pre>df1.join(df2, on="id", how="left")</pre>
+            <p><b>3. Right Join (<code>how="right"</code>)</b>: Keeps all right rows, plus matching left rows.</p>
+            <pre>df1.join(df2, on="id", how="right")</pre>
+            <p><b>4. Full Outer Join (<code>how="outer"</code>)</b>: Keeps all rows from both sides. Also called
+              <code>full</code> or <code>fullouter</code>.
+            </p>
+            <pre>df1.join(df2, on="id", how="outer")</pre>
+            <p><b>5. Left Semi Join (<code>how="leftsemi"</code>)</b>: Keeps left rows that match the right. <b>No</b>
+              right columns are added.</p>
+            <pre>df1.join(df2, on="id", how="leftsemi")</pre>
+            <p><b>6. Left Anti Join (<code>how="leftanti"</code>)</b>: Keeps left rows that do <b>not</b> match the
+              right.</p>
+            <pre>df1.join(df2, on="id", how="leftanti")</pre>
+            <p><b>7. Cross Join</b>: Matches every left row with every right row. This creates a very large dataset.</p>
+            <pre>df1.crossJoin(df2)</pre>
+          </div>
+        </div>
+
+        <!-- NEW: Join Strategies -->
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What are the different join strategies in PySpark? Explain with examples.<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★★ Execution internals</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Join strategy</b> determines <i>how</i> Spark physically executes a join. Spark's Catalyst optimizer
+              picks the best strategy based on table sizes and hints. There are 5 strategies:</p>
+
+            <p><b>1. Broadcast Hash Join (BHJ)</b> — Best for joining a <b>small dataset with a large one</b>. The
+              smaller dataset is <b>broadcasted to every executor node</b>, where it is <b>hashed</b> and then joined
+              with the locally held partition of the large dataset. No shuffle of the large side is needed — the join
+              happens entirely locally on each executor.</p>
+            <pre>from pyspark.sql.functions import broadcast
 # Force broadcast: small table sent to all executors, hashed, joined locally
 large.join(broadcast(small), "key").explain()
 # Physical plan shows: BroadcastHashJoin</pre>
 
-          <p><b>2. Shuffle Hash Join (SHJ)</b> — <b>Both datasets are shuffled</b> across the cluster so that the same keys from both sides land in the same partitions. Then the <b>smaller side is hashed and bucketed</b>, and joined with the larger side within those partitions. Used when one shuffled side fits in executor memory but is too large to broadcast.</p>
-          <pre># Force shuffle hash join via hint
+            <p><b>2. Shuffle Hash Join (SHJ)</b> — <b>Both datasets are shuffled</b> across the cluster so that the same
+              keys from both sides land in the same partitions. Then the <b>smaller side is hashed and bucketed</b>, and
+              joined with the larger side within those partitions. Used when one shuffled side fits in executor memory
+              but is too large to broadcast.</p>
+            <pre># Force shuffle hash join via hint
 df1.hint("shuffle_hash").join(df2, "key").explain()
 # Physical plan shows: ShuffledHashJoin</pre>
 
-          <p><b>3. Shuffle Sort Merge Join (SMJ)</b> — The default strategy for large–large joins. Involves <b>three phases</b>:<br>
-          &nbsp;&nbsp;① <b>Shuffle</b> — redistribute data by join keys so matching keys go to the same partition.<br>
-          &nbsp;&nbsp;② <b>Sort</b> — order the data within each partition by join key.<br>
-          &nbsp;&nbsp;③ <b>Merge</b> — iterate through the sorted data to join matching keys efficiently.<br>
-          Reliable but expensive due to the full shuffle and sort cost.</p>
-          <pre># Default for large-large joins; force with hint
+            <p><b>3. Shuffle Sort Merge Join (SMJ)</b> — The default strategy for large–large joins. Involves <b>three
+                phases</b>:<br>
+              &nbsp;&nbsp;① <b>Shuffle</b> — redistribute data by join keys so matching keys go to the same
+              partition.<br>
+              &nbsp;&nbsp;② <b>Sort</b> — order the data within each partition by join key.<br>
+              &nbsp;&nbsp;③ <b>Merge</b> — iterate through the sorted data to join matching keys efficiently.<br>
+              Reliable but expensive due to the full shuffle and sort cost.</p>
+            <pre># Default for large-large joins; force with hint
 df1.hint("merge").join(df2, "key").explain()
 # Physical plan shows: SortMergeJoin</pre>
 
-          <p><b>4. Broadcast Nested Loop Join (BNLJ)</b> — Used for <b>non-equi joins</b> (e.g., <code>&gt;</code>, <code>&lt;</code>, <code>&lt;=</code>, range conditions). One <b>entire dataset is broadcasted</b> to all partitions, and a <b>nested loop</b> compares every record of the broadcasted data against every record in the local partition. Very slow — O(n×m) per partition. Spark usually warns when this is chosen.</p>
-          <pre># Non-equi join — Spark falls back to BNLJ automatically
+            <p><b>4. Broadcast Nested Loop Join (BNLJ)</b> — Used for <b>non-equi joins</b> (e.g., <code>&gt;</code>,
+              <code>&lt;</code>, <code>&lt;=</code>, range conditions). One <b>entire dataset is broadcasted</b> to all
+              partitions, and a <b>nested loop</b> compares every record of the broadcasted data against every record in
+              the local partition. Very slow — O(n×m) per partition. Spark usually warns when this is chosen.
+            </p>
+            <pre># Non-equi join — Spark falls back to BNLJ automatically
 result = df1.join(df2, df1["start"] &lt;= df2["end"]).explain()
 # Physical plan shows: BroadcastNestedLoopJoin</pre>
 
-          <p><b>5. Cartesian Product Join</b> — Also used for non-equi joins or when there is <b>no join condition</b>. Instead of broadcasting, the <b>entire partition of one dataset is sent to all other worker nodes</b> to perform a full cross-join against every record of the other dataset. Produces n×m rows — only use intentionally.</p>
-          <pre># Explicit cross join (requires config to allow)
+            <p><b>5. Cartesian Product Join</b> — Also used for non-equi joins or when there is <b>no join
+                condition</b>. Instead of broadcasting, the <b>entire partition of one dataset is sent to all other
+                worker nodes</b> to perform a full cross-join against every record of the other dataset. Produces n×m
+              rows — only use intentionally.</p>
+            <pre># Explicit cross join (requires config to allow)
 spark.conf.set("spark.sql.crossJoin.enabled", "true")
 df1.crossJoin(df2).explain()
 # Physical plan shows: CartesianProduct</pre>
 
-          <p><b>Summary table:</b></p>
-          <pre>Strategy              | Join Type  | Shuffle? | When Used
+            <p><b>Summary table:</b></p>
+            <pre>Strategy              | Join Type  | Shuffle? | When Used
 ----------------------|------------|----------|---------------------------
 Broadcast Hash Join   | Equi       | No       | One side small (&lt;10 MB)
 Shuffle Hash Join     | Equi       | Yes      | One side fits in executor RAM
@@ -305,60 +628,166 @@ Shuffle Sort Merge    | Equi       | Yes      | Both sides large (default)
 Broadcast Nested Loop | Non-equi   | No       | &gt;/&lt; conditions, slow
 Cartesian Product     | Non-equi   | No       | No condition / cross join</pre>
 
-          <p><b>Force a strategy with hints:</b> <code>df1.hint("broadcast")</code>, <code>df1.hint("merge")</code>, <code>df1.hint("shuffle_hash")</code>. Always verify with <code>.explain("formatted")</code>.</p>
+            <p><b>Force a strategy with hints:</b> <code>df1.hint("broadcast")</code>, <code>df1.hint("merge")</code>,
+              <code>df1.hint("shuffle_hash")</code>. Always verify with <code>.explain("formatted")</code>.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is the difference between RDD, DataFrame, and Dataset in PySpark?</div><div class="freq">★★★★★ Asked in almost every interview</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p><b>RDD</b> (Resilient Distributed Dataset) is the low-level API — immutable, distributed collection of objects. No schema. Manual optimization needed.<br><br><b>DataFrame</b> is a distributed table with named columns and schema. Uses Catalyst optimizer for query planning. Most commonly used in DE roles.<br><br><b>Dataset</b> is a typed version of DataFrame (available in Scala/Java; in Python, DataFrame == Dataset[Row]).<br><br>For 4 YOE: "I always prefer DataFrames for ETL pipelines due to Catalyst optimization and schema enforcement. RDDs only when I need low-level custom transformations."</p></div>
-      </div>
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the difference between RDD, DataFrame, and Dataset in PySpark?</div>
+              <div class="freq">★★★★★ Asked in almost every interview</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>RDD</b> (Resilient Distributed Dataset) is the low-level API — immutable, distributed collection of
+              objects. No schema. Manual optimization needed.<br><br><b>DataFrame</b> is a distributed table with named
+              columns and schema. Uses Catalyst optimizer for query planning. Most commonly used in DE
+              roles.<br><br><b>Dataset</b> is a typed version of DataFrame (available in Scala/Java; in Python,
+              DataFrame == Dataset[Row]).<br><br>For 4 YOE: "I always prefer DataFrames for ETL pipelines due to
+              Catalyst optimization and schema enforcement. RDDs only when I need low-level custom transformations."</p>
+          </div>
+        </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">Explain lazy evaluation in PySpark and why it matters.</div><div class="freq">★★★★★ Core concept question</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p>Transformations like <code>filter()</code>, <code>select()</code>, <code>groupBy()</code> are NOT executed immediately — they build a DAG (Directed Acyclic Graph). Execution only happens when an <b>action</b> is called (<code>count()</code>, <code>collect()</code>, <code>show()</code>, <code>write()</code>).<br><br>Why it matters: Spark's Catalyst optimizer can reorder, merge, and push down operations across the entire plan before executing — often dramatically reducing data scanned and shuffled.</p><pre># Transformation (lazy - nothing runs yet)
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">Explain lazy evaluation in PySpark and why it matters.</div>
+              <div class="freq">★★★★★ Core concept question</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>Transformations like <code>filter()</code>, <code>select()</code>, <code>groupBy()</code> are NOT
+              executed immediately — they build a DAG (Directed Acyclic Graph). Execution only happens when an
+              <b>action</b> is called (<code>count()</code>, <code>collect()</code>, <code>show()</code>,
+              <code>write()</code>).<br><br>Why it matters: Spark's Catalyst optimizer can reorder, merge, and push down
+              operations across the entire plan before executing — often dramatically reducing data scanned and
+              shuffled.
+            </p>
+            <pre># Transformation (lazy - nothing runs yet)
 df2 = df.filter(df.age > 30).select("name", "age")
 # Action (triggers DAG execution)
-df2.show()</pre></div>
-      </div>
+df2.show()</pre>
+          </div>
+        </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is the difference between narrow and wide transformations?</div><div class="freq">★★★★☆ Optimization-focused</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p><b>Narrow transformations</b>: Each input partition maps to exactly one output partition. No data shuffle. Fast. Examples: <code>map()</code>, <code>filter()</code>, <code>select()</code>.<br><br><b>Wide transformations</b>: Data moves across partitions (shuffle). Expensive. Examples: <code>groupBy()</code>, <code>join()</code>, <code>distinct()</code>, <code>orderBy()</code>.<br><br>Key insight: Wide transformations create stage boundaries in the DAG. Minimizing them is a primary optimization strategy.</p></div>
-      </div>
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the difference between narrow and wide transformations?</div>
+              <div class="freq">★★★★☆ Optimization-focused</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Narrow transformations</b>: Each input partition maps to exactly one output partition. No data
+              shuffle. Fast. Examples: <code>map()</code>, <code>filter()</code>, <code>select()</code>.<br><br><b>Wide
+                transformations</b>: Data moves across partitions (shuffle). Expensive. Examples:
+              <code>groupBy()</code>, <code>join()</code>, <code>distinct()</code>, <code>orderBy()</code>.<br><br>Key
+              insight: Wide transformations create stage boundaries in the DAG. Minimizing them is a primary
+              optimization strategy.
+            </p>
+          </div>
+        </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is data skew and how do you handle it in PySpark?</div><div class="freq">★★★★★ Senior-level must-know</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p>Data skew happens when some partitions have significantly more data than others, causing certain tasks to take much longer (stragglers).<br><br><b>Strategies:</b><br>1. <b>Salting</b>: Add a random prefix to skewed keys to spread load.<br>2. <b>Broadcast joins</b>: If one table is small, broadcast it to avoid shuffle entirely.<br>3. <b>Repartition</b>: Force redistribution with <code>df.repartition(n, "key_col")</code>.<br>4. <b>Skew hint (Spark 3+)</b>: <code>df.hint("skew", "join_key")</code></p><pre># Salting example
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is data skew and how do you handle it in PySpark?</div>
+              <div class="freq">★★★★★ Senior-level must-know</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>Data skew happens when some partitions have significantly more data than others, causing certain tasks to
+              take much longer (stragglers).<br><br><b>Strategies:</b><br>1. <b>Salting</b>: Add a random prefix to
+              skewed keys to spread load.<br>2. <b>Broadcast joins</b>: If one table is small, broadcast it to avoid
+              shuffle entirely.<br>3. <b>Repartition</b>: Force redistribution with
+              <code>df.repartition(n, "key_col")</code>.<br>4. <b>Skew hint (Spark 3+)</b>:
+              <code>df.hint("skew", "join_key")</code>
+            </p>
+            <pre># Salting example
 from pyspark.sql.functions import concat, lit, rand
 df_salted = df.withColumn("salted_key",
-  concat(col("key"), lit("_"), (rand()*10).cast("int")))</pre></div>
-      </div>
+  concat(col("key"), lit("_"), (rand()*10).cast("int")))</pre>
+          </div>
+        </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is the difference between <code>cache()</code> and <code>persist()</code>?</div><div class="freq">★★★★☆ Performance question</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p><code>cache()</code> stores the DataFrame in memory only (shortcut for <code>persist(MEMORY_AND_DISK)</code>).<br><br><code>persist()</code> gives you control over the storage level:<br>• <code>MEMORY_ONLY</code><br>• <code>MEMORY_AND_DISK</code> (default cache)<br>• <code>DISK_ONLY</code><br>• <code>MEMORY_ONLY_SER</code> (serialized, saves memory)<br><br>Use when a DataFrame is reused multiple times across actions. Always <code>unpersist()</code> when done.</p></div>
-      </div>
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the difference between <code>cache()</code> and <code>persist()</code>?</div>
+              <div class="freq">★★★★☆ Performance question</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><code>cache()</code> stores the DataFrame in memory only (shortcut for
+              <code>persist(MEMORY_AND_DISK)</code>).<br><br><code>persist()</code> gives you control over the storage
+              level:<br>• <code>MEMORY_ONLY</code><br>• <code>MEMORY_AND_DISK</code> (default cache)<br>•
+              <code>DISK_ONLY</code><br>• <code>MEMORY_ONLY_SER</code> (serialized, saves memory)<br><br>Use when a
+              DataFrame is reused multiple times across actions. Always <code>unpersist()</code> when done.
+            </p>
+          </div>
+        </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is a Broadcast Join and when do you use it?</div><div class="freq">★★★★★ ETL optimization staple</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p>A broadcast join sends the smaller DataFrame to all executor nodes so the join happens locally without a shuffle. Ideal when one side is &lt;10 MB (configurable via <code>spark.sql.autoBroadcastJoinThreshold</code>).</p><pre>from pyspark.sql.functions import broadcast
-result = large_df.join(broadcast(small_df), "key_col")</pre><p>Spark can also auto-broadcast based on the config threshold. Always set it explicitly for predictability in production.</p></div>
-      </div>
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is a Broadcast Join and when do you use it?</div>
+              <div class="freq">★★★★★ ETL optimization staple</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>A broadcast join sends the smaller DataFrame to all executor nodes so the join happens locally without a
+              shuffle. Ideal when one side is &lt;10 MB (configurable via
+              <code>spark.sql.autoBroadcastJoinThreshold</code>).
+            </p>
+            <pre>from pyspark.sql.functions import broadcast
+result = large_df.join(broadcast(small_df), "key_col")</pre>
+            <p>Spark can also auto-broadcast based on the config threshold. Always set it explicitly for predictability
+              in production.</p>
+          </div>
+        </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">Explain <code>groupBy()</code> vs Window functions. When do you use window functions?</div><div class="freq">★★★★★ Coding interview staple</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p><code>groupBy()</code> collapses rows into groups — you lose the original row detail.<br><br><code>Window</code> functions compute aggregates while <b>keeping all original rows</b> — essential for ranking, running totals, lag/lead comparisons.</p><pre>from pyspark.sql.window import Window
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">Explain <code>groupBy()</code> vs Window functions. When do you use window functions?
+              </div>
+              <div class="freq">★★★★★ Coding interview staple</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><code>groupBy()</code> collapses rows into groups — you lose the original row
+              detail.<br><br><code>Window</code> functions compute aggregates while <b>keeping all original rows</b> —
+              essential for ranking, running totals, lag/lead comparisons.</p>
+            <pre>from pyspark.sql.window import Window
 from pyspark.sql.functions import rank, lag
 
 w = Window.partitionBy("dept").orderBy(col("salary").desc())
 df.withColumn("rank", rank().over(w)) \
-  .withColumn("prev_salary", lag("salary", 1).over(w)).show()</pre></div>
-      </div>
+  .withColumn("prev_salary", lag("salary", 1).over(w)).show()</pre>
+          </div>
+        </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you handle duplicate records in a PySpark DataFrame?</div><div class="freq">★★★★☆ ETL/data quality</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p>Three approaches depending on need:</p><pre># Drop exact duplicates across all columns
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you handle duplicate records in a PySpark DataFrame?</div>
+              <div class="freq">★★★★☆ ETL/data quality</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>Three approaches depending on need:</p>
+            <pre># Drop exact duplicates across all columns
 df.dropDuplicates()
 
 # Drop duplicates based on subset of columns
@@ -368,84 +797,185 @@ df.dropDuplicates(subset=["id", "event_date"])
 from pyspark.sql.window import Window
 from pyspark.sql.functions import row_number
 w = Window.partitionBy("id").orderBy(col("updated_at").desc())
-df.withColumn("rn", row_number().over(w)).filter(col("rn") == 1).drop("rn")</pre></div>
-      </div>
-
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is <code>repartition()</code> vs <code>coalesce()</code>?</div><div class="freq">★★★★☆ Performance tuning</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p><code>repartition(n)</code>: Full shuffle, can increase or decrease partitions. Used when you need to redistribute data evenly (e.g., before a join or write).<br><br><code>coalesce(n)</code>: Merges partitions without full shuffle. Only decreases partition count. More efficient for reducing before a write.<br><br>Rule of thumb: Use <code>coalesce</code> before writing to avoid many small files. Use <code>repartition</code> to parallelize better before heavy computations.</p></div>
-      </div>
-
-      <!-- NEW: Partitioning vs Bucketing -->
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is the difference between partitioning and bucketing in PySpark?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Storage & join optimization</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b>Partitioning</b> creates a folder hierarchy based on column values (<code>year=2024/month=01/</code>). It enables <b>partition pruning</b> — Spark skips irrelevant folders entirely. Use only on low‑cardinality columns (year, region, status).</p>
-          <pre>df.write.partitionBy("year", "month").parquet("/sales/")
-# Creates: /sales/year=2024/month=01/part-000.parquet</pre>
-          <p><b>Bucketing</b> hashes a column into a fixed number of buckets and saves files accordingly. It eliminates shuffles in joins when both sides are bucketed identically. Bucketing requires Hive‑style table (<code>saveAsTable</code>) and works well for high‑cardinality columns like <code>user_id</code>.</p>
-          <pre>df.write.bucketBy(8, "customer_id").sortBy("customer_id") \
-  .saveAsTable("sales_bucketed")</pre>
-          <p><b>Key difference:</b> Partitioning is for <i>filtering</i> (pruning), bucketing is for <i>joining</i> efficiently. Partitioning on high‑cardinality columns creates millions of tiny files — a classic mistake.</p>
+df.withColumn("rn", row_number().over(w)).filter(col("rn") == 1).drop("rn")</pre>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you read and write Parquet files, and why is Parquet preferred?</div><div class="freq">★★★★★ Production DE standard</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p>Parquet is columnar, compressed, and supports predicate pushdown — ideal for analytical workloads.</p><pre># Read
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is <code>repartition()</code> vs <code>coalesce()</code>?</div>
+              <div class="freq">★★★★☆ Performance tuning</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><code>repartition(n)</code>: Full shuffle, can increase or decrease partitions. Used when you need to
+              redistribute data evenly (e.g., before a join or write).<br><br><code>coalesce(n)</code>: Merges
+              partitions without full shuffle. Only decreases partition count. More efficient for reducing before a
+              write.<br><br>Rule of thumb: Use <code>coalesce</code> before writing to avoid many small files. Use
+              <code>repartition</code> to parallelize better before heavy computations.
+            </p>
+          </div>
+        </div>
+
+        <!-- NEW: Partitioning vs Bucketing -->
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the difference between partitioning and bucketing in PySpark?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Storage & join optimization</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Partitioning</b> creates a folder hierarchy based on column values (<code>year=2024/month=01/</code>).
+              It enables <b>partition pruning</b> — Spark skips irrelevant folders entirely. Use only on low‑cardinality
+              columns (year, region, status).</p>
+            <pre>df.write.partitionBy("year", "month").parquet("/sales/")
+# Creates: /sales/year=2024/month=01/part-000.parquet</pre>
+            <p><b>Bucketing</b> hashes a column into a fixed number of buckets and saves files accordingly. It
+              eliminates shuffles in joins when both sides are bucketed identically. Bucketing requires Hive‑style table
+              (<code>saveAsTable</code>) and works well for high‑cardinality columns like <code>user_id</code>.</p>
+            <pre>df.write.bucketBy(8, "customer_id").sortBy("customer_id") \
+  .saveAsTable("sales_bucketed")</pre>
+            <p><b>Key difference:</b> Partitioning is for <i>filtering</i> (pruning), bucketing is for <i>joining</i>
+              efficiently. Partitioning on high‑cardinality columns creates millions of tiny files — a classic mistake.
+            </p>
+          </div>
+        </div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you read and write Parquet files, and why is Parquet preferred?</div>
+              <div class="freq">★★★★★ Production DE standard</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>Parquet is columnar, compressed, and supports predicate pushdown — ideal for analytical workloads.</p>
+            <pre># Read
 df = spark.read.parquet("s3://bucket/data/")
 df = spark.read.option("mergeSchema", "true").parquet("path/")
 
 # Write with partitioning
 df.write.mode("overwrite") \
   .partitionBy("year", "month") \
-  .parquet("s3://bucket/output/")</pre><p>Advantages over CSV/JSON: 10–100x faster reads, 75% smaller files, schema embedded in file.</p></div>
-      </div>
+  .parquet("s3://bucket/output/")</pre>
+            <p>Advantages over CSV/JSON: 10–100x faster reads, 75% smaller files, schema embedded in file.</p>
+          </div>
+        </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is the difference between <code>map()</code> and <code>mapPartitions()</code>?<span class="new-badge">NEW</span></div><div class="freq">★★★☆☆ RDD-level question</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p><code>map()</code>: Applies a function row-by-row. One function call per record.<br><br><code>mapPartitions()</code>: Applies a function once per partition, receiving an iterator. More efficient when setup/teardown cost is high (e.g., DB connections, ML model loading) — you initialize once per partition, not per row.</p><pre>def process_partition(iterator):
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the difference between <code>map()</code> and
+                <code>mapPartitions()</code>?<span class="new-badge">NEW</span>
+              </div>
+              <div class="freq">★★★☆☆ RDD-level question</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><code>map()</code>: Applies a function row-by-row. One function call per
+              record.<br><br><code>mapPartitions()</code>: Applies a function once per partition, receiving an iterator.
+              More efficient when setup/teardown cost is high (e.g., DB connections, ML model loading) — you initialize
+              once per partition, not per row.</p>
+            <pre>def process_partition(iterator):
     conn = open_db_connection()  # opened once per partition
     for row in iterator:
         yield transform(row, conn)
     conn.close()
 
-rdd.mapPartitions(process_partition)</pre></div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title"><span class="badge badge-adv">🚀 Advanced</span> Optimization & Production</div>
-
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you optimize a slow PySpark job?</div><div class="freq">★★★★★ Scenario / senior question</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p>Systematic approach:<br>1. <b>Check Spark UI</b>: Find stages with long task durations (skew indicator).<br>2. <b>Fix shuffles</b>: Reduce wide transformations, use broadcast joins for small tables.<br>3. <b>Fix data skew</b>: Salting, repartitioning.<br>4. <b>Tune partitions</b>: <code>spark.sql.shuffle.partitions</code> (default 200, often too high for small data, too low for large).<br>5. <b>Use caching</b>: Cache reused DataFrames.<br>6. <b>Use columnar formats</b>: Parquet with proper partitioning.<br>7. <b>Push predicates early</b>: Filter before joins.<br>8. <b>Avoid UDFs</b>: Native Spark functions are Catalyst-optimized; Python UDFs break optimization.</p></div>
-      </div>
-
-      <!-- NEW: AQE -->
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is Adaptive Query Execution (AQE) in Spark 3.x?<span class="new-badge">NEW</span></div><div class="freq">★★★★★ Modern Spark optimization</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p>AQE (Spark 3.0+) re‑optimizes the query plan at runtime based on actual data statistics, not just estimates. It can dynamically change join strategies, coalesce shuffle partitions, and handle skew — all automatically.</p>
-          <p><b>Three key features:</b></p>
-          <p><b>1. Dynamic Partition Coalescing:</b> Reduces the number of post‑shuffle partitions when the data is small, avoiding the overhead of many tiny tasks.</p>
-          <p><b>2. Automatic Skew Join Handling:</b> Detects skewed partitions and splits them into smaller sub‑partitions, balancing the load. Enabled with <code>spark.sql.adaptive.skewJoin.enabled=true</code>.</p>
-          <p><b>3. Dynamic Join Strategy Switching:</b> Can switch a sort‑merge join to a broadcast join if a table turns out to be smaller than expected at runtime.</p>
-          <pre># Enable AQE (on by default in recent Spark versions)
-spark.conf.set("spark.sql.adaptive.enabled", "true")
-spark.conf.set("spark.sql.adaptive.coalescePartitions.enabled", "true")</pre>
-          <p>AQE works best with wide transformations and was a major improvement in Spark 3.0 — it eliminates much of the manual tuning previously needed for partition counts and skew.</p>
+rdd.mapPartitions(process_partition)</pre>
+          </div>
         </div>
       </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is the Catalyst optimizer and the Tungsten engine?</div><div class="freq">★★★☆☆ Depth question</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p><b>Catalyst</b>: Spark's query optimizer — the "brain". Applies rule-based and cost-based optimizations: predicate pushdown, column pruning, join reordering. Works on the logical/physical plan before execution.<br><br><b>Tungsten</b>: The "muscle" / execution engine. Manages memory off-heap, generates JVM bytecode on the fly (code generation), and uses cache-aware data structures for better CPU efficiency. Does 3 things: memory management, code generation, caching.<br><br>Together they make DataFrames much faster than RDDs.</p></div>
-      </div>
+      <div class="section">
+        <div class="section-title"><span class="badge badge-adv">🚀 Advanced</span> Optimization & Production</div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you implement SCD Type 2 in PySpark?</div><div class="freq">★★★★☆ Real-world ETL scenario</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p>SCD Type 2 maintains full history by adding new rows with version flags instead of updating in place.</p><pre>from pyspark.sql.functions import current_timestamp, lit
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you optimize a slow PySpark job?</div>
+              <div class="freq">★★★★★ Scenario / senior question</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>Systematic approach:<br>1. <b>Check Spark UI</b>: Find stages with long task durations (skew
+              indicator).<br>2. <b>Fix shuffles</b>: Reduce wide transformations, use broadcast joins for small
+              tables.<br>3. <b>Fix data skew</b>: Salting, repartitioning.<br>4. <b>Tune partitions</b>:
+              <code>spark.sql.shuffle.partitions</code> (default 200, often too high for small data, too low for
+              large).<br>5. <b>Use caching</b>: Cache reused DataFrames.<br>6. <b>Use columnar formats</b>: Parquet with
+              proper partitioning.<br>7. <b>Push predicates early</b>: Filter before joins.<br>8. <b>Avoid UDFs</b>:
+              Native Spark functions are Catalyst-optimized; Python UDFs break optimization.
+            </p>
+          </div>
+        </div>
+
+        <!-- NEW: AQE -->
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is Adaptive Query Execution (AQE) in Spark 3.x?<span class="new-badge">NEW</span>
+              </div>
+              <div class="freq">★★★★★ Modern Spark optimization</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>AQE (Spark 3.0+) re‑optimizes the query plan at runtime based on actual data statistics, not just
+              estimates. It can dynamically change join strategies, coalesce shuffle partitions, and handle skew — all
+              automatically.</p>
+            <p><b>Three key features:</b></p>
+            <p><b>1. Dynamic Partition Coalescing:</b> Reduces the number of post‑shuffle partitions when the data is
+              small, avoiding the overhead of many tiny tasks.</p>
+            <p><b>2. Automatic Skew Join Handling:</b> Detects skewed partitions and splits them into smaller
+              sub‑partitions, balancing the load. Enabled with <code>spark.sql.adaptive.skewJoin.enabled=true</code>.
+            </p>
+            <p><b>3. Dynamic Join Strategy Switching:</b> Can switch a sort‑merge join to a broadcast join if a table
+              turns out to be smaller than expected at runtime.</p>
+            <pre># Enable AQE (on by default in recent Spark versions)
+spark.conf.set("spark.sql.adaptive.enabled", "true")
+spark.conf.set("spark.sql.adaptive.coalescePartitions.enabled", "true")</pre>
+            <p>AQE works best with wide transformations and was a major improvement in Spark 3.0 — it eliminates much of
+              the manual tuning previously needed for partition counts and skew.</p>
+          </div>
+        </div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the Catalyst optimizer and the Tungsten engine?</div>
+              <div class="freq">★★★☆☆ Depth question</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Catalyst</b>: Spark's query optimizer — the "brain". Applies rule-based and cost-based optimizations:
+              predicate pushdown, column pruning, join reordering. Works on the logical/physical plan before
+              execution.<br><br><b>Tungsten</b>: The "muscle" / execution engine. Manages memory off-heap, generates JVM
+              bytecode on the fly (code generation), and uses cache-aware data structures for better CPU efficiency.
+              Does 3 things: memory management, code generation, caching.<br><br>Together they make DataFrames much
+              faster than RDDs.</p>
+          </div>
+        </div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you implement SCD Type 2 in PySpark?</div>
+              <div class="freq">★★★★☆ Real-world ETL scenario</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>SCD Type 2 maintains full history by adding new rows with version flags instead of updating in place.</p>
+            <pre>from pyspark.sql.functions import current_timestamp, lit
 
 # Step 1: Identify changed records
 changed = incoming.join(existing, "id") \
@@ -460,42 +990,88 @@ existing = existing.join(changed.select("id"), "id", "left_anti") \
 # Step 3: Insert new versions
 new_rows = changed.withColumn("start_date", current_timestamp()) \
   .withColumn("end_date", lit(None)) \
-  .withColumn("is_current", lit(True))</pre></div>
-      </div>
+  .withColumn("is_current", lit(True))</pre>
+          </div>
+        </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is <code>spark.sql.shuffle.partitions</code> and how do you tune it?</div><div class="freq">★★★★☆ Config tuning</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p>Controls the number of partitions after a shuffle operation (joins, groupBy). Default is 200.<br><br>Rules:<br>• Too high → many small tasks, overhead<br>• Too low → large tasks, OOM risk<br><br>General formula: <code>Total data size (MB) / 128</code> is a rough starting point.</p><pre>spark.conf.set("spark.sql.shuffle.partitions", "400")
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is <code>spark.sql.shuffle.partitions</code> and how do you tune it?</div>
+              <div class="freq">★★★★☆ Config tuning</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>Controls the number of partitions after a shuffle operation (joins, groupBy). Default is
+              200.<br><br>Rules:<br>• Too high → many small tasks, overhead<br>• Too low → large tasks, OOM
+              risk<br><br>General formula: <code>Total data size (MB) / 128</code> is a rough starting point.</p>
+            <pre>spark.conf.set("spark.sql.shuffle.partitions", "400")
 # Or in session builder
-SparkSession.builder.config("spark.sql.shuffle.partitions", "400")</pre></div>
-      </div>
+SparkSession.builder.config("spark.sql.shuffle.partitions", "400")</pre>
+          </div>
+        </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is Delta Lake and how does it improve on plain Parquet?</div><div class="freq">★★★★★ Modern DE stack</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p>Delta Lake adds ACID transactions, schema evolution, time travel, and DML (UPDATE/DELETE/MERGE) on top of Parquet.<br><br>Key features:<br>• <b>MERGE</b> (upsert): Essential for SCD and CDC pipelines<br>• <b>Time travel</b>: Query historical snapshots with <code>VERSION AS OF</code><br>• <b>Schema enforcement</b>: Rejects bad data at write time<br>• <b>Compaction</b>: <code>OPTIMIZE</code> command merges small files</p><pre>from delta.tables import DeltaTable
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is Delta Lake and how does it improve on plain Parquet?</div>
+              <div class="freq">★★★★★ Modern DE stack</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>Delta Lake adds ACID transactions, schema evolution, time travel, and DML (UPDATE/DELETE/MERGE) on top of
+              Parquet.<br><br>Key features:<br>• <b>MERGE</b> (upsert): Essential for SCD and CDC pipelines<br>• <b>Time
+                travel</b>: Query historical snapshots with <code>VERSION AS OF</code><br>• <b>Schema enforcement</b>:
+              Rejects bad data at write time<br>• <b>Compaction</b>: <code>OPTIMIZE</code> command merges small files
+            </p>
+            <pre>from delta.tables import DeltaTable
 dt = DeltaTable.forPath(spark, "s3://bucket/delta_table/")
 dt.alias("t").merge(
   incoming.alias("s"), "t.id = s.id"
 ).whenMatchedUpdateAll() \
  .whenNotMatchedInsertAll() \
- .execute()</pre></div>
-      </div>
+ .execute()</pre>
+          </div>
+        </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">Explain PySpark UDFs — why avoid them and what are the alternatives?</div><div class="freq">★★★★☆ Performance anti-pattern</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p>Python UDFs serialize data row-by-row between JVM and Python interpreter — very slow (10–100x vs native functions).<br><br><b>Alternatives (in order of preference):</b><br>1. <b>Built-in Spark functions</b> (<code>pyspark.sql.functions</code>) — Catalyst-optimized<br>2. <b>Pandas UDFs (vectorized UDFs)</b> — operate on Arrow batches, much faster<br>3. <b>Spark SQL expressions</b> for simple logic</p><pre>from pyspark.sql.functions import pandas_udf
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">Explain PySpark UDFs — why avoid them and what are the alternatives?</div>
+              <div class="freq">★★★★☆ Performance anti-pattern</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>Python UDFs serialize data row-by-row between JVM and Python interpreter — very slow (10–100x vs native
+              functions).<br><br><b>Alternatives (in order of preference):</b><br>1. <b>Built-in Spark functions</b>
+              (<code>pyspark.sql.functions</code>) — Catalyst-optimized<br>2. <b>Pandas UDFs (vectorized UDFs)</b> —
+              operate on Arrow batches, much faster<br>3. <b>Spark SQL expressions</b> for simple logic</p>
+            <pre>from pyspark.sql.functions import pandas_udf
 import pandas as pd
 
 @pandas_udf("double")
 def fast_udf(s: pd.Series) -> pd.Series:
     return s * 2.5
 
-df.withColumn("result", fast_udf(col("value")))</pre></div>
-      </div>
+df.withColumn("result", fast_udf(col("value")))</pre>
+          </div>
+        </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you read streaming data in PySpark Structured Streaming?</div><div class="freq">★★★★☆ Modern pipelines</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p>PySpark Structured Streaming treats a stream as an unbounded DataFrame. Works with Kafka, files, Delta Lake as sources.</p><pre>df = spark.readStream \
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you read streaming data in PySpark Structured Streaming?</div>
+              <div class="freq">★★★★☆ Modern pipelines</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>PySpark Structured Streaming treats a stream as an unbounded DataFrame. Works with Kafka, files, Delta
+              Lake as sources.</p>
+            <pre>df = spark.readStream \
   .format("kafka") \
   .option("kafka.bootstrap.servers", "broker:9092") \
   .option("subscribe", "my_topic") \
@@ -509,32 +1085,67 @@ result.writeStream \
   .format("delta") \
   .outputMode("append") \
   .option("checkpointLocation", "s3://checkpoints/") \
-  .start()</pre></div>
-      </div>
+  .start()</pre>
+          </div>
+        </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What happens during a Spark job — explain stages, tasks, and executors.</div><div class="freq">★★★★☆ Architecture depth</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p><b>Driver</b>: Orchestrates the job, builds the DAG, schedules tasks.<br><b>Executor</b>: Worker process on cluster nodes. Executes tasks and stores cached data.<br><b>Job</b>: Triggered by an action. Divided into <b>stages</b> at shuffle boundaries.<br><b>Stage</b>: Set of tasks that can run in parallel without shuffle.<br><b>Task</b>: Smallest unit of work — processes one partition on one executor core.<br><br>Analogy: Job = entire project, Stage = sprint, Task = individual story.</p></div>
-      </div>
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What happens during a Spark job — explain stages, tasks, and executors.</div>
+              <div class="freq">★★★★☆ Architecture depth</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Driver</b>: Orchestrates the job, builds the DAG, schedules tasks.<br><b>Executor</b>: Worker process
+              on cluster nodes. Executes tasks and stores cached data.<br><b>Job</b>: Triggered by an action. Divided
+              into <b>stages</b> at shuffle boundaries.<br><b>Stage</b>: Set of tasks that can run in parallel without
+              shuffle.<br><b>Task</b>: Smallest unit of work — processes one partition on one executor
+              core.<br><br>Analogy: Job = entire project, Stage = sprint, Task = individual story.</p>
+          </div>
+        </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is predicate pushdown and column pruning in Spark?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Optimization internals</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p><b>Predicate pushdown</b>: Catalyst moves filter conditions as close to the data source as possible — so fewer rows are read from disk. Works best with Parquet/ORC which support file-level statistics.<br><br><b>Column pruning</b>: Only the columns needed for the query are read from storage. With columnar formats like Parquet, this avoids reading irrelevant columns entirely.<br><br>Together they can reduce I/O by 80–90% on large datasets.</p><pre># Spark automatically pushes the filter to Parquet read
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is predicate pushdown and column pruning in Spark?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Optimization internals</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Predicate pushdown</b>: Catalyst moves filter conditions as close to the data source as possible — so
+              fewer rows are read from disk. Works best with Parquet/ORC which support file-level
+              statistics.<br><br><b>Column pruning</b>: Only the columns needed for the query are read from storage.
+              With columnar formats like Parquet, this avoids reading irrelevant columns entirely.<br><br>Together they
+              can reduce I/O by 80–90% on large datasets.</p>
+            <pre># Spark automatically pushes the filter to Parquet read
 df = spark.read.parquet("data/")
 df.filter(col("year") == 2024).select("name", "salary").show()
-# Only reads year=2024 partitions and name+salary columns</pre></div>
-      </div>
+# Only reads year=2024 partitions and name+salary columns</pre>
+          </div>
+        </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you handle schema evolution in PySpark pipelines?<span class="new-badge">UPDATED</span></div><div class="freq">★★★★☆ Production scenario</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b>Schema evolution</b> means your data changes (like adding a new column), and you want Spark to handle it safely.</p>
-          <p><b>1. Parquet (<code>mergeSchema</code>)</b><br>Combine old and new columns across multiple files.</p>
-          <pre>df = spark.read \
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you handle schema evolution in PySpark pipelines?<span
+                  class="new-badge">UPDATED</span></div>
+              <div class="freq">★★★★☆ Production scenario</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Schema evolution</b> means your data changes (like adding a new column), and you want Spark to handle
+              it safely.</p>
+            <p><b>1. Parquet (<code>mergeSchema</code>)</b><br>Combine old and new columns across multiple files.</p>
+            <pre>df = spark.read \
   .option("mergeSchema", "true") \
   .parquet("path/to/files/")</pre>
-          <p><b>2. Delta Lake</b><br>Delta is strict. You must explicitly allow changes.</p>
-          <pre># Append: Allow adding new columns
+            <p><b>2. Delta Lake</b><br>Delta is strict. You must explicitly allow changes.</p>
+            <pre># Append: Allow adding new columns
 df.write.format("delta") \
   .option("mergeSchema", "true") \
   .mode("append").save("path/")
@@ -543,8 +1154,9 @@ df.write.format("delta") \
 df.write.format("delta") \
   .option("overwriteSchema", "true") \
   .mode("overwrite").save("path/")</pre>
-          <p><b>3. Explicit Schema (<code>StructType</code>)</b><br>Define exactly what columns exist before reading. Set <code>nullable=True</code> for new columns.</p>
-          <pre>from pyspark.sql.types import StructType, StructField, StringType, IntegerType
+            <p><b>3. Explicit Schema (<code>StructType</code>)</b><br>Define exactly what columns exist before reading.
+              Set <code>nullable=True</code> for new columns.</p>
+            <pre>from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 
 my_schema = StructType([
   StructField("id", IntegerType(), True),
@@ -552,43 +1164,80 @@ my_schema = StructType([
 ])
 
 df = spark.read.schema(my_schema).json("path/to/data.json")</pre>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is the difference between <code>sort()</code> and <code>orderBy()</code> in PySpark?<span class="new-badge">NEW</span></div><div class="freq">★★★☆☆ Common confusion point</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer"><p><code>sort()</code> and <code>orderBy()</code> are actually aliases — they do the same thing: global sort across all partitions (causes a shuffle).<br><br>For performance-sensitive work, use <code>sortWithinPartitions()</code> — it sorts within each partition only, no shuffle, much cheaper. Useful before writing to ensure each output file is internally sorted.</p><pre># Global sort (shuffle - expensive)
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the difference between <code>sort()</code> and <code>orderBy()</code> in
+                PySpark?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★☆☆ Common confusion point</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><code>sort()</code> and <code>orderBy()</code> are actually aliases — they do the same thing: global sort
+              across all partitions (causes a shuffle).<br><br>For performance-sensitive work, use
+              <code>sortWithinPartitions()</code> — it sorts within each partition only, no shuffle, much cheaper.
+              Useful before writing to ensure each output file is internally sorted.
+            </p>
+            <pre># Global sort (shuffle - expensive)
 df.orderBy(col("salary").desc())
 
 # Sort within partitions only (no shuffle - cheap)
-df.sortWithinPartitions("dept", "salary")</pre></div>
-      </div>
-
-      <!-- NEW: Small files problem -->
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is the small files problem in Spark and how do you fix it?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Production data layout</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p>When a Spark job writes many small files (e.g., thousands of files &lt;10 MB each) — common with over‑partitioning or streaming append workloads — it causes excessive metadata overhead, slow listing, and poor read performance.</p>
-          <p><b>Fixes:</b></p>
-          <p><b>1. Coalesce/repartition before write</b> – reduce the number of output partitions.</p>
-          <pre>df.coalesce(10).write.parquet("/output/")
-# or for even distribution: df.repartition(10).write.parquet("/output/")</pre>
-          <p><b>2. Delta Lake OPTIMIZE</b> – compaction command that merges small files into larger ones (target ≈1 GB).</p>
-          <pre>from delta.tables import DeltaTable
-DeltaTable.forPath(spark, "/delta/table").optimize().executeCompaction()</pre>
-          <p><b>3. Adjust shuffle partitions</b> – <code>spark.sql.shuffle.partitions</code> can be lowered if the default 200 produces too many small files.</p>
-          <p><b>4. Use <code>maxRecordsPerFile</code></b> – control the number of records per output file.</p>
-          <pre>df.write.option("maxRecordsPerFile", 5000000).parquet("/output/")</pre>
+df.sortWithinPartitions("dept", "salary")</pre>
+          </div>
         </div>
-      </div>
 
-      <!-- NEW: repartitionByRange -->
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is <code>repartitionByRange()</code> and how is it different from <code>repartition()</code>?<span class="new-badge">NEW</span></div><div class="freq">★★★☆☆ Partitioning internals</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b><code>repartition(n, col)</code></b> uses a hash function on the column to assign rows to partitions. Keys with the same hash land in the same partition, but values are not sorted within or across partitions.</p>
-          <p><b><code>repartitionByRange(n, col)</code></b> uses range partitioning — it samples the data, determines boundaries, and assigns rows so partition 0 has the lowest range and partition n-1 has the highest. Rows within each partition are in sorted order.</p>
-          <pre># Hash repartition — rows with same key, same partition but unsorted
+        <!-- NEW: Small files problem -->
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the small files problem in Spark and how do you fix it?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Production data layout</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>When a Spark job writes many small files (e.g., thousands of files &lt;10 MB each) — common with
+              over‑partitioning or streaming append workloads — it causes excessive metadata overhead, slow listing, and
+              poor read performance.</p>
+            <p><b>Fixes:</b></p>
+            <p><b>1. Coalesce/repartition before write</b> – reduce the number of output partitions.</p>
+            <pre>df.coalesce(10).write.parquet("/output/")
+# or for even distribution: df.repartition(10).write.parquet("/output/")</pre>
+            <p><b>2. Delta Lake OPTIMIZE</b> – compaction command that merges small files into larger ones (target ≈1
+              GB).</p>
+            <pre>from delta.tables import DeltaTable
+DeltaTable.forPath(spark, "/delta/table").optimize().executeCompaction()</pre>
+            <p><b>3. Adjust shuffle partitions</b> – <code>spark.sql.shuffle.partitions</code> can be lowered if the
+              default 200 produces too many small files.</p>
+            <p><b>4. Use <code>maxRecordsPerFile</code></b> – control the number of records per output file.</p>
+            <pre>df.write.option("maxRecordsPerFile", 5000000).parquet("/output/")</pre>
+          </div>
+        </div>
+
+        <!-- NEW: repartitionByRange -->
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is <code>repartitionByRange()</code> and how is it different from
+                <code>repartition()</code>?<span class="new-badge">NEW</span>
+              </div>
+              <div class="freq">★★★☆☆ Partitioning internals</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b><code>repartition(n, col)</code></b> uses a hash function on the column to assign rows to partitions.
+              Keys with the same hash land in the same partition, but values are not sorted within or across partitions.
+            </p>
+            <p><b><code>repartitionByRange(n, col)</code></b> uses range partitioning — it samples the data, determines
+              boundaries, and assigns rows so partition 0 has the lowest range and partition n-1 has the highest. Rows
+              within each partition are in sorted order.</p>
+            <pre># Hash repartition — rows with same key, same partition but unsorted
 df.repartition(8, "customer_id")
 
 # Range repartition — partitions hold sorted, non-overlapping ranges
@@ -596,19 +1245,32 @@ df.repartitionByRange(8, "order_date")
 
 # Useful before rangeJoin or when writing sorted output per file
 df.repartitionByRange(4, "event_date").write.parquet("/output/")</pre>
-          <p><b>When to use:</b> Use <code>repartitionByRange</code> when downstream operations benefit from sorted data (range joins, sorted writes) or when you want to avoid hot partitions caused by key hash collisions.</p>
+            <p><b>When to use:</b> Use <code>repartitionByRange</code> when downstream operations benefit from sorted
+              data (range joins, sorted writes) or when you want to avoid hot partitions caused by key hash collisions.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <!-- NEW: Checkpoint vs Cache/Persist -->
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is the difference between <code>checkpoint()</code> and <code>cache()</code> / <code>persist()</code>?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Lineage & fault tolerance</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p>Both store computed data to avoid recomputation, but they differ fundamentally in how lineage is handled.</p>
-          <p><b><code>cache()</code> / <code>persist()</code></b>: Stores the DataFrame in memory/disk <b>but keeps the full lineage (DAG)</b>. If a partition is lost, Spark can recompute it using the lineage. Stored in executor memory — lost when the application ends.</p>
-          <pre>df.cache()     # stores in memory, lineage intact
+        <!-- NEW: Checkpoint vs Cache/Persist -->
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the difference between <code>checkpoint()</code> and <code>cache()</code> /
+                <code>persist()</code>?<span class="new-badge">NEW</span>
+              </div>
+              <div class="freq">★★★★☆ Lineage & fault tolerance</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>Both store computed data to avoid recomputation, but they differ fundamentally in how lineage is handled.
+            </p>
+            <p><b><code>cache()</code> / <code>persist()</code></b>: Stores the DataFrame in memory/disk <b>but keeps
+                the full lineage (DAG)</b>. If a partition is lost, Spark can recompute it using the lineage. Stored in
+              executor memory — lost when the application ends.</p>
+            <pre>df.cache()     # stores in memory, lineage intact
 df.persist(StorageLevel.DISK_ONLY)  # stores on disk, lineage intact</pre>
-          <p><b><code>checkpoint()`</b>: Writes the DataFrame to a <b>reliable external storage (HDFS/S3)</b> and <b>truncates the lineage</b>. Spark no longer tracks how the data was computed. Persists beyond the Spark session.</p>
+            <p><b><code>checkpoint()`</b>: Writes the DataFrame to a <b>reliable external storage (HDFS/S3)</b> and <b>truncates the lineage</b>. Spark no longer tracks how the data was computed. Persists beyond the Spark session.</p>
           <pre>spark.sparkContext.setCheckpointDir("s3://bucket/checkpoints/")
 df.checkpoint()   # lineage is cut; data saved to HDFS/S3</pre>
           <p><b>When to use checkpoint:</b> For very long iterative pipelines (ML training loops, graph algorithms) where the lineage DAG becomes so long it causes memory issues on the driver. Also used in Structured Streaming for state recovery.</p>
@@ -643,16 +1305,28 @@ df.rdd.foreach(validate_row)
 
 print("Nulls found:", null_count.value)
 print("Errors found:", error_count.value)</pre>
-          <p><b>Important gotcha:</b> Accumulators inside <b>transformations</b> (like <code>map</code>) can be counted multiple times if Spark re-executes tasks. Always trigger them inside <b>actions</b> (like <code>foreach</code>) for accurate counts.</p>
+          <p><b>Important gotcha:</b> Accumulators inside <b>transformations</b> (like <code>map</code>) can be counted
+                multiple times if Spark re-executes tasks. Always trigger them inside <b>actions</b> (like
+                <code>foreach</code>) for accurate counts.</p>
+          </div>
         </div>
-      </div>
 
-      <!-- NEW: Broadcast Variables -->
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What are Broadcast Variables in PySpark? How are they different from broadcast joins?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Shared state optimization</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b>Broadcast variables</b> let you ship a <b>read-only value</b> (like a dictionary or lookup table) to all executors <b>once</b>, rather than sending it with every task. They are used in RDD-level operations. Broadcast joins (using <code>broadcast(df)</code>) are the DataFrame-level equivalent but are handled by Spark automatically.</p>
-          <pre>sc = spark.sparkContext
+        <!-- NEW: Broadcast Variables -->
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What are Broadcast Variables in PySpark? How are they different from broadcast
+                joins?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Shared state optimization</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Broadcast variables</b> let you ship a <b>read-only value</b> (like a dictionary or lookup table) to
+              all executors <b>once</b>, rather than sending it with every task. They are used in RDD-level operations.
+              Broadcast joins (using <code>broadcast(df)</code>) are the DataFrame-level equivalent but are handled by
+              Spark automatically.</p>
+            <pre>sc = spark.sparkContext
 
 # Create a broadcast variable with a lookup dict
 country_map = {"IN": "India", "US": "United States", "UK": "United Kingdom"}
@@ -666,45 +1340,73 @@ result.collect()
 
 # Always unpersist when done to free memory
 bc_map.unpersist()</pre>
-          <p><b>DataFrame broadcast join (for comparison):</b></p>
-          <pre>from pyspark.sql.functions import broadcast
+            <p><b>DataFrame broadcast join (for comparison):</b></p>
+            <pre>from pyspark.sql.functions import broadcast
 result = large_df.join(broadcast(small_df), "key")</pre>
-          <p><b>Key difference:</b> <code>sc.broadcast()</code> is for RDD operations with arbitrary Python objects. <code>broadcast(df)</code> is for DataFrame joins and is handled by Catalyst. Both avoid re-sending data per task.</p>
+            <p><b>Key difference:</b> <code>sc.broadcast()</code> is for RDD operations with arbitrary Python objects.
+              <code>broadcast(df)</code> is for DataFrame joins and is handled by Catalyst. Both avoid re-sending data
+              per task.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <!-- NEW: OOM / Memory Management -->
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you handle OutOfMemory (OOM) errors in PySpark?<span class="new-badge">NEW</span></div><div class="freq">★★★★★ Production firefighting</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p>OOM in Spark typically happens in two places: <b>executor OOM</b> (during task execution) or <b>driver OOM</b> (when collecting data). Each has different causes and fixes.</p>
-          <p><b>Executor OOM — common causes &amp; fixes:</b></p>
-          <p><b>1. Data skew</b> — one partition is huge. Fix: salt the key or use AQE skew handling.</p>
-          <p><b>2. Too few partitions</b> — each partition has too much data. Fix: increase shuffle partitions.</p>
-          <pre>spark.conf.set("spark.sql.shuffle.partitions", "800")</pre>
-          <p><b>3. Broadcast of a too-large table</b> — disable auto-broadcast or lower the threshold.</p>
-          <pre>spark.conf.set("spark.sql.autoBroadcastJoinThreshold", "-1")  # disable</pre>
-          <p><b>4. Caching too much</b> — evict cached DataFrames. Use <code>MEMORY_AND_DISK</code> so spill to disk when memory is full.</p>
-          <pre>df.persist(StorageLevel.MEMORY_AND_DISK)</pre>
-          <p><b>Driver OOM — common causes &amp; fixes:</b></p>
-          <p>Calling <code>collect()</code>, <code>toPandas()</code>, or creating huge broadcast variables. Fix: never collect large datasets to driver; use <code>show()</code>, <code>limit()</code>, or write to storage instead.</p>
-          <pre># BAD — pulls all data to driver
+        <!-- NEW: OOM / Memory Management -->
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you handle OutOfMemory (OOM) errors in PySpark?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★★ Production firefighting</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>OOM in Spark typically happens in two places: <b>executor OOM</b> (during task execution) or <b>driver
+                OOM</b> (when collecting data). Each has different causes and fixes.</p>
+            <p><b>Executor OOM — common causes &amp; fixes:</b></p>
+            <p><b>1. Data skew</b> — one partition is huge. Fix: salt the key or use AQE skew handling.</p>
+            <p><b>2. Too few partitions</b> — each partition has too much data. Fix: increase shuffle partitions.</p>
+            <pre>spark.conf.set("spark.sql.shuffle.partitions", "800")</pre>
+            <p><b>3. Broadcast of a too-large table</b> — disable auto-broadcast or lower the threshold.</p>
+            <pre>spark.conf.set("spark.sql.autoBroadcastJoinThreshold", "-1")  # disable</pre>
+            <p><b>4. Caching too much</b> — evict cached DataFrames. Use <code>MEMORY_AND_DISK</code> so spill to disk
+              when memory is full.</p>
+            <pre>df.persist(StorageLevel.MEMORY_AND_DISK)</pre>
+            <p><b>Driver OOM — common causes &amp; fixes:</b></p>
+            <p>Calling <code>collect()</code>, <code>toPandas()</code>, or creating huge broadcast variables. Fix: never
+              collect large datasets to driver; use <code>show()</code>, <code>limit()</code>, or write to storage
+              instead.</p>
+            <pre># BAD — pulls all data to driver
 data = df.collect()
 
 # GOOD — write to storage or sample
 df.write.parquet("/output/")
 df.limit(100).toPandas()  # only for small previews</pre>
-          <p><b>General tuning levers:</b> Increase executor memory (<code>spark.executor.memory</code>), increase memory fraction (<code>spark.memory.fraction</code>), enable off-heap (<code>spark.memory.offHeap.enabled</code>).</p>
+            <p><b>General tuning levers:</b> Increase executor memory (<code>spark.executor.memory</code>), increase
+              memory fraction (<code>spark.memory.fraction</code>), enable off-heap
+              (<code>spark.memory.offHeap.enabled</code>).</p>
+          </div>
         </div>
-      </div>
 
-      <!-- NEW: Dynamic Partition Pruning -->
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is Dynamic Partition Pruning (DPP) in Spark 3.x?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Modern optimizer feature</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b>Dynamic Partition Pruning (DPP)</b> is a Spark 3.0+ optimization where Spark <b>pushes a filter from the result of a subquery</b> into a partitioned table scan — at runtime — eliminating irrelevant partitions that cannot be determined at planning time.</p>
-          <p><b>Classic example:</b> You join a large fact table (partitioned by <code>date_id</code>) with a small dimension table filtered by <code>country = 'IN'</code>. Without DPP, Spark scans all partitions of the fact table. With DPP, it first evaluates which <code>date_id</code> values the filtered dimension returns, then scans only those partitions.</p>
-          <pre># fact table is partitioned by date_id
+        <!-- NEW: Dynamic Partition Pruning -->
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is Dynamic Partition Pruning (DPP) in Spark 3.x?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Modern optimizer feature</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Dynamic Partition Pruning (DPP)</b> is a Spark 3.0+ optimization where Spark <b>pushes a filter from
+                the result of a subquery</b> into a partitioned table scan — at runtime — eliminating irrelevant
+              partitions that cannot be determined at planning time.</p>
+            <p><b>Classic example:</b> You join a large fact table (partitioned by <code>date_id</code>) with a small
+              dimension table filtered by <code>country = 'IN'</code>. Without DPP, Spark scans all partitions of the
+              fact table. With DPP, it first evaluates which <code>date_id</code> values the filtered dimension returns,
+              then scans only those partitions.</p>
+            <pre># fact table is partitioned by date_id
 fact   = spark.read.parquet("/warehouse/fact_sales/")
 dim    = spark.read.parquet("/warehouse/dim_date/")
 
@@ -712,59 +1414,102 @@ dim    = spark.read.parquet("/warehouse/dim_date/")
 result = fact.join(dim.filter(dim.country == "IN"), "date_id")
 result.explain()
 # Look for "PartitionFilters" applied dynamically in the physical plan</pre>
-          <p><b>Requirements for DPP to work:</b></p>
-          <p>1. The large table must be <b>partitioned</b> on the join key.<br>2. The small side must be <b>broadcasted</b> (or small enough for Spark to broadcast).<br>3. <code>spark.sql.optimizer.dynamicPartitionPruning.enabled = true</code> (default in Spark 3).</p>
-          <pre>spark.conf.set("spark.sql.optimizer.dynamicPartitionPruning.enabled", "true")</pre>
-          <p>DPP can eliminate 90%+ of data scanned in typical star-schema queries.</p>
+            <p><b>Requirements for DPP to work:</b></p>
+            <p>1. The large table must be <b>partitioned</b> on the join key.<br>2. The small side must be
+              <b>broadcasted</b> (or small enough for Spark to broadcast).<br>3.
+              <code>spark.sql.optimizer.dynamicPartitionPruning.enabled = true</code> (default in Spark 3).
+            </p>
+            <pre>spark.conf.set("spark.sql.optimizer.dynamicPartitionPruning.enabled", "true")</pre>
+            <p>DPP can eliminate 90%+ of data scanned in typical star-schema queries.</p>
+          </div>
         </div>
-      </div>
 
-      <!-- NEW: explain() modes -->
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you use <code>explain()</code> in PySpark to read query plans?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Debugging / optimization</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><code>df.explain(mode)</code> prints the query execution plan. Reading it correctly helps diagnose slow jobs. Spark 3+ added named modes.</p>
-          <p><b>Available modes:</b></p>
-          <p><b><code>"simple"</code></b> (default) — Physical plan only. Good for quick checks.</p>
-          <pre>df.explain()        # same as explain("simple")
+        <!-- NEW: explain() modes -->
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you use <code>explain()</code> in PySpark to read query plans?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Debugging / optimization</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><code>df.explain(mode)</code> prints the query execution plan. Reading it correctly helps diagnose slow
+              jobs. Spark 3+ added named modes.</p>
+            <p><b>Available modes:</b></p>
+            <p><b><code>"simple"</code></b> (default) — Physical plan only. Good for quick checks.</p>
+            <pre>df.explain()        # same as explain("simple")
 # == Physical Plan ==
 # *(2) HashAggregate(...)
 # +- Exchange hashpartitioning(dept#10, 200) ...
 # +- *(1) Scan parquet ...</pre>
-          <p><b><code>"extended"</code></b> — Shows Parsed → Analyzed → Optimized Logical Plan + Physical Plan. Best for understanding what Catalyst did.</p>
-          <pre>df.explain("extended")</pre>
-          <p><b><code>"codegen"</code></b> — Shows generated Java code (Tungsten). Useful for JVM-level debugging.</p>
-          <pre>df.explain("codegen")</pre>
-          <p><b><code>"cost"</code></b> — Shows optimized plan with row count and size statistics used by the cost-based optimizer.</p>
-          <pre>df.explain("cost")</pre>
-          <p><b><code>"formatted"</code></b> — Clean columnar format with node IDs. Best for reading complex plans.</p>
-          <pre>df.explain("formatted")</pre>
-          <p><b>What to look for:</b> <code>BroadcastHashJoin</code> vs <code>SortMergeJoin</code> (join strategy), <code>Exchange</code> nodes (shuffle points), <code>PartitionFilters</code> (DPP applied), and <code>PushedFilters</code> (predicate pushdown).</p>
+            <p><b><code>"extended"</code></b> — Shows Parsed → Analyzed → Optimized Logical Plan + Physical Plan. Best
+              for understanding what Catalyst did.</p>
+            <pre>df.explain("extended")</pre>
+            <p><b><code>"codegen"</code></b> — Shows generated Java code (Tungsten). Useful for JVM-level debugging.</p>
+            <pre>df.explain("codegen")</pre>
+            <p><b><code>"cost"</code></b> — Shows optimized plan with row count and size statistics used by the
+              cost-based optimizer.</p>
+            <pre>df.explain("cost")</pre>
+            <p><b><code>"formatted"</code></b> — Clean columnar format with node IDs. Best for reading complex plans.
+            </p>
+            <pre>df.explain("formatted")</pre>
+            <p><b>What to look for:</b> <code>BroadcastHashJoin</code> vs <code>SortMergeJoin</code> (join strategy),
+              <code>Exchange</code> nodes (shuffle points), <code>PartitionFilters</code> (DPP applied), and
+              <code>PushedFilters</code> (predicate pushdown).
+            </p>
+          </div>
         </div>
-      </div>
 
-      <!-- NEW: Cluster deploy modes -->
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is the difference between client mode and cluster mode in Spark?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Deployment / production</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p>The <b>deploy mode</b> determines where the <b>Driver</b> process runs.</p>
-          <p><b>Client mode</b>: The Driver runs on the <b>machine that submitted the job</b> (e.g., your laptop or a gateway node). Logs and output are visible locally. Suitable for interactive development and debugging.</p>
-          <pre>spark-submit --master yarn --deploy-mode client my_job.py</pre>
-          <p><b>Cluster mode</b>: The Driver runs <b>inside the cluster</b> (on one of the worker/manager nodes). The submitting machine can disconnect after submission. Suitable for production scheduled jobs.</p>
-          <pre>spark-submit --master yarn --deploy-mode cluster my_job.py</pre>
-          <p><b>Key differences:</b></p>
-          <p>• <b>Network latency</b>: In client mode, the driver communicates with executors over the network — bad if the submitting machine is far from the cluster.<br>• <b>Fault tolerance</b>: In cluster mode, losing the submitting machine doesn't kill the job.<br>• <b>Logs</b>: In cluster mode, logs go to the cluster's log system (YARN logs, Spark History Server).<br>• <b>Databricks/EMR</b>: Managed services abstract this — you always get cluster mode effectively.</p>
-          <p><b>Rule of thumb:</b> Use <b>client mode</b> for development/notebooks; use <b>cluster mode</b> for production pipelines.</p>
+        <!-- NEW: Cluster deploy modes -->
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the difference between client mode and cluster mode in Spark?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Deployment / production</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>The <b>deploy mode</b> determines where the <b>Driver</b> process runs.</p>
+            <p><b>Client mode</b>: The Driver runs on the <b>machine that submitted the job</b> (e.g., your laptop or a
+              gateway node). Logs and output are visible locally. Suitable for interactive development and debugging.
+            </p>
+            <pre>spark-submit --master yarn --deploy-mode client my_job.py</pre>
+            <p><b>Cluster mode</b>: The Driver runs <b>inside the cluster</b> (on one of the worker/manager nodes). The
+              submitting machine can disconnect after submission. Suitable for production scheduled jobs.</p>
+            <pre>spark-submit --master yarn --deploy-mode cluster my_job.py</pre>
+            <p><b>Key differences:</b></p>
+            <p>• <b>Network latency</b>: In client mode, the driver communicates with executors over the network — bad
+              if the submitting machine is far from the cluster.<br>• <b>Fault tolerance</b>: In cluster mode, losing
+              the submitting machine doesn't kill the job.<br>• <b>Logs</b>: In cluster mode, logs go to the cluster's
+              log system (YARN logs, Spark History Server).<br>• <b>Databricks/EMR</b>: Managed services abstract this —
+              you always get cluster mode effectively.</p>
+            <p><b>Rule of thumb:</b> Use <b>client mode</b> for development/notebooks; use <b>cluster mode</b> for
+              production pipelines.</p>
+          </div>
         </div>
-      </div>
 
-      <!-- NEW: Z-Ordering -->
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is Z-Ordering in Delta Lake and how does it improve query performance?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Delta Lake optimization</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b>Z-Ordering</b> (ZORDER) is a multi-dimensional data clustering technique in Delta Lake. It co-locates related data in the same set of files so that Spark can skip more files during a query (data skipping).</p>
-          <p><b>How it works:</b> Z-Order maps multiple column values to a single Z-order curve value and sorts files by that value. Files that are close on the Z-curve contain similar values across all Z-ordered columns — enabling effective data skipping even for multi-column filters.</p>
-          <pre>from delta.tables import DeltaTable
+        <!-- NEW: Z-Ordering -->
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is Z-Ordering in Delta Lake and how does it improve query performance?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Delta Lake optimization</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Z-Ordering</b> (ZORDER) is a multi-dimensional data clustering technique in Delta Lake. It co-locates
+              related data in the same set of files so that Spark can skip more files during a query (data skipping).
+            </p>
+            <p><b>How it works:</b> Z-Order maps multiple column values to a single Z-order curve value and sorts files
+              by that value. Files that are close on the Z-curve contain similar values across all Z-ordered columns —
+              enabling effective data skipping even for multi-column filters.</p>
+            <pre>from delta.tables import DeltaTable
 
 # Run OPTIMIZE with ZORDER on frequently filtered columns
 DeltaTable.forPath(spark, "/delta/sales") \
@@ -776,40 +1521,485 @@ spark.read.format("delta").load("/delta/sales") \
   .filter((col("customer_id") == 42) & (col("order_date") > "2024-01-01")) \
   .show()
 # Spark skips files that don't contain customer_id=42 or that date range</pre>
-          <p><b>Z-Ordering vs Partitioning:</b></p>
-          <p>• <b>Partitioning</b>: Creates physical directory splits. Works well for low-cardinality columns (year, region). Querying by partition = folder pruning.<br>• <b>Z-Ordering</b>: Works within existing partitions for high-cardinality columns (user_id, product_id). Does not create new directories. Relies on Delta's file-level statistics for data skipping.<br>• <b>Combine both</b>: Partition by <code>year/month</code>, Z-Order by <code>customer_id</code> for best results.</p>
-          <p><b>When to use:</b> Z-Order columns you filter on frequently but cannot partition on (high cardinality). Re-run <code>OPTIMIZE ... ZORDER BY</code> periodically as new data arrives (VACUUM old files after).</p>
+            <p><b>Z-Ordering vs Partitioning:</b></p>
+            <p>• <b>Partitioning</b>: Creates physical directory splits. Works well for low-cardinality columns (year,
+              region). Querying by partition = folder pruning.<br>• <b>Z-Ordering</b>: Works within existing partitions
+              for high-cardinality columns (user_id, product_id). Does not create new directories. Relies on Delta's
+              file-level statistics for data skipping.<br>• <b>Combine both</b>: Partition by <code>year/month</code>,
+              Z-Order by <code>customer_id</code> for best results.</p>
+            <p><b>When to use:</b> Z-Order columns you filter on frequently but cannot partition on (high cardinality).
+              Re-run <code>OPTIMIZE ... ZORDER BY</code> periodically as new data arrives (VACUUM old files after).</p>
+          </div>
         </div>
+
+        <!-- NEW: Wide vs Long Format -->
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the difference between Wide format and Long format? How do you convert between
+                them in PySpark?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Data reshaping / ETL transformation</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Wide format</b> and <b>Long format</b> are two different ways to represent the same data. Wide format
+              has <b>more columns</b>; long format has <b>more rows</b>.</p>
+
+            <p><b>Wide Format</b> — each measured variable gets its own column. The table grows horizontally as you add
+              more variables.</p>
+            <pre>Student   Math   Science   English
+Alice     80     85        90
+Bob       70     75        80</pre>
+
+            <p><b>Long Format</b> — each row holds exactly one measurement, with a category column and a value column.
+              The table grows vertically as you add more records.</p>
+            <pre>Student   Subject   Marks
+Alice     Math      80
+Alice     Science   85
+Alice     English   90
+Bob       Math      70
+Bob       Science   75
+Bob       English   80</pre>
+
+            <p><b>Quick comparison:</b></p>
+            <pre>Point            | Wide Format                  | Long Format
+-----------------|------------------------------|-----------------------------
+Shape            | More columns                 | More rows
+Table grows      | Horizontally                 | Vertically
+Easy for         | Reports, Excel-style views   | Analysis, filtering, grouping
+Common operation | Unpivot / melt / stack       | Pivot / groupBy + pivot</pre>
+
+            <p><b>Long → Wide using <code>pivot</code></b> (most common in PySpark):</p>
+            <pre>from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
+
+spark = SparkSession.builder.getOrCreate()
+
+data = [
+    ("Alice", "Math",    80),
+    ("Alice", "Science", 85),
+    ("Alice", "English", 90),
+    ("Bob",   "Math",    70),
+    ("Bob",   "Science", 75),
+    ("Bob",   "English", 80),
+]
+df_long = spark.createDataFrame(data, ["Student", "Subject", "Marks"])
+
+# pivot: unique Subject values become new column headers
+df_wide = df_long.groupBy("Student").pivot("Subject").sum("Marks")
+df_wide.show()
+# +-------+-------+----+-------+
+# |Student|English|Math|Science|
+# +-------+-------+----+-------+
+# |  Alice|     90|  80|     85|
+# |    Bob|     80|  70|     75|
+# +-------+-------+----+-------+</pre>
+
+            <p><b>Wide → Long using <code>stack</code> (unpivot)</b>:</p>
+            <pre>from pyspark.sql.functions import expr
+
+data_wide = [("Alice", 80, 85, 90), ("Bob", 70, 75, 80)]
+df_wide2 = spark.createDataFrame(data_wide, ["Student", "Math", "Science", "English"])
+
+# stack(n, 'col1', col1, 'col2', col2, ...) — n = number of columns being unpivoted
+df_long2 = df_wide2.select(
+    "Student",
+    expr("""
+        stack(
+            3,
+            'Math',    Math,
+            'Science', Science,
+            'English', English
+        ) as (Subject, Marks)
+    """)
+)
+df_long2.show()
+# +-------+-------+-----+
+# |Student|Subject|Marks|
+# +-------+-------+-----+
+# |  Alice|   Math|   80|
+# |  Alice|Science|   85|
+# |  Alice|English|   90|
+# |    Bob|   Math|   70|
+# |    Bob|Science|   75|
+# |    Bob|English|   80|
+# +-------+-------+-----+</pre>
+
+            <p><b>Spark 3.4+ native <code>unpivot()</code></b> — cleaner API, same result:</p>
+            <pre># Spark 3.4+ only
+df_long3 = df_wide2.unpivot(
+    ids       = ["Student"],
+    values    = ["Math", "Science", "English"],
+    variableColumnName = "Subject",
+    valueColumnName    = "Marks"
+)
+df_long3.show()  # identical output to the stack approach above</pre>
+
+            <p><b>Sales data quick example (Wide → Long → Wide):</b></p>
+            <pre>sales_wide = spark.createDataFrame(
+    [("A", 100, 120, 140), ("B", 200, 220, 250)],
+    ["Store", "Jan", "Feb", "Mar"]
+)
+
+# Wide → Long
+sales_long = sales_wide.select(
+    "Store",
+    expr("stack(3, 'Jan',Jan,'Feb',Feb,'Mar',Mar) as (Month, Sales)")
+)
+# Long → Wide again
+sales_wide2 = sales_long.groupBy("Store").pivot("Month").sum("Sales")
+sales_wide2.show()
+# +-----+---+---+---+
+# |Store|Feb|Jan|Mar|
+# +-----+---+---+---+
+# |    A|120|100|140|
+# |    B|220|200|250|
+# +-----+---+---+---+</pre>
+
+            <p><b>Interview answer:</b> "Wide format stores each variable as a separate column — ideal for reports. Long
+              format stores each measurement as a row with a category column — better for analysis and aggregation. In
+              PySpark, <code>groupBy().pivot()</code> converts long to wide. Wide to long uses <code>stack()</code> via
+              <code>expr()</code>, or the native <code>unpivot()</code> API in Spark 3.4+."
+            </p>
+
+            <p><b>Term cheat sheet:</b></p>
+            <pre>Term              | Meaning
+------------------|----------------------------------------------
+pivot             | Long → Wide (subjects become columns)
+unpivot / melt    | Wide → Long (columns become rows)
+stack             | PySpark SQL function used to unpivot
+groupBy + pivot   | Standard PySpark long-to-wide pattern
+unpivot()         | Native DataFrame API (Spark 3.4+)</pre>
+          </div>
+        </div>
+
+        <!-- NEW: PySpark Performance Tuning Techniques -->
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What are the key techniques to tune PySpark performance and resource
+                configuration?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★★ Senior-level optimization checklist</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>There are <b>8 major levers</b> to tune PySpark performance. Use them systematically rather than
+              guessing.</p>
+
+            <p><b>1. Increase Executor Memory</b> — Give each executor more heap space to avoid spills and OOM errors.
+            </p>
+            <pre># At session creation
+from pyspark.sql import SparkSession
+spark = SparkSession.builder \
+    .config("spark.executor.memory", "8g") \
+    .config("spark.executor.memoryOverhead", "2g") \
+    .getOrCreate()
+
+# Or via spark-submit
+# spark-submit --executor-memory 8g my_job.py</pre>
+
+            <p><b>2. Adjust Number of Cores per Executor</b> — More cores = more parallel tasks per executor. Too many
+              can cause memory contention; 2–5 is usually optimal.</p>
+            <pre>spark = SparkSession.builder \
+    .config("spark.executor.cores", "4") \
+    .getOrCreate()
+
+# Rule: cores_per_executor x executor_memory should fit in node RAM
+# If node has 64 GB RAM and 16 cores → 4 executors x 4 cores x 16 GB each</pre>
+
+            <p><b>3. Tune Number of Executors</b> — Scale out for large data; fewer for small jobs to avoid scheduling
+              overhead.</p>
+            <pre>spark = SparkSession.builder \
+    .config("spark.executor.instances", "10") \
+    .getOrCreate()
+
+# Or via spark-submit
+# spark-submit --num-executors 10 my_job.py
+
+# Check current parallelism
+print(spark.sparkContext.defaultParallelism)  # usually 2x total cores</pre>
+
+            <p><b>4. Tune <code>spark.sql.shuffle.partitions</code></b> — Controls partitions after a shuffle (groupBy,
+              join). Default is 200 — too high for small data, too low for large.</p>
+            <pre># General formula: total_shuffle_data_MB / 128
+# For a 50 GB shuffle: ~400 partitions
+spark.conf.set("spark.sql.shuffle.partitions", "400")
+
+# With AQE enabled, Spark auto-coalesces after shuffle
+spark.conf.set("spark.sql.adaptive.enabled", "true")
+spark.conf.set("spark.sql.adaptive.coalescePartitions.enabled", "true")</pre>
+
+            <p><b>5. Enable Dynamic Resource Allocation</b> — Spark automatically scales executors up/down based on
+              workload, freeing resources when idle.</p>
+            <pre>spark = SparkSession.builder \
+    .config("spark.dynamicAllocation.enabled", "true") \
+    .config("spark.dynamicAllocation.minExecutors", "2") \
+    .config("spark.dynamicAllocation.maxExecutors", "20") \
+    .config("spark.dynamicAllocation.initialExecutors", "5") \
+    .config("spark.shuffle.service.enabled", "true")  # required for DRA \
+    .getOrCreate()</pre>
+
+            <p><b>6. Use Efficient File Formats (Parquet / ORC)</b> — Columnar formats enable predicate pushdown and
+              column pruning, reducing I/O by 80-90%.</p>
+            <pre># Write as Parquet (columnar, compressed, schema-embedded)
+df.write.mode("overwrite").parquet("s3://bucket/output/")
+
+# Read — Spark automatically applies predicate pushdown
+df = spark.read.parquet("s3://bucket/data/")
+df.filter(col("year") == 2024).select("name", "amount").show()
+# Only reads year=2024 files and only name+amount columns</pre>
+
+            <p><b>7. Apply Compression to Reduce I/O</b> — Compress shuffle data and output files. Snappy is fast
+              (default); Zstd gives better ratio.</p>
+            <pre># Compress shuffle data in flight
+spark.conf.set("spark.io.compression.codec", "snappy")       # fast
+spark.conf.set("spark.io.compression.codec", "zstd")         # better ratio
+
+# Write Parquet with explicit compression
+df.write.option("compression", "snappy").parquet("/output/") # default
+df.write.option("compression", "zstd").parquet("/output/")   # smaller files
+
+# Compress in-memory cached data (serialized, less memory)
+from pyspark import StorageLevel
+df.persist(StorageLevel.MEMORY_AND_DISK_SER)</pre>
+
+            <p><b>8. Leverage Caching / Persistence Wisely</b> — Cache DataFrames that are reused across multiple
+              actions. Choose the right storage level based on memory budget.</p>
+            <pre>from pyspark import StorageLevel
+
+# Use when DataFrame is reused 2+ times and fits in memory
+df.cache()          # MEMORY_AND_DISK — default cache
+
+# Or choose a specific level:
+df.persist(StorageLevel.MEMORY_ONLY)        # fastest, may recompute on eviction
+df.persist(StorageLevel.MEMORY_AND_DISK)    # spills to disk if memory full
+df.persist(StorageLevel.MEMORY_ONLY_SER)    # serialized — smaller footprint
+df.persist(StorageLevel.DISK_ONLY)          # when memory is very tight
+
+# Always release when done
+df.unpersist()
+
+# Anti-pattern: caching a DataFrame used only once is wasteful
+df.cache()          # BAD if df.count() is called only once
+df.count()          # cache materializes here, but never reused</pre>
+
+            <p><b>Summary cheat sheet:</b></p>
+            <pre>Technique                       | Config / Method
+--------------------------------|------------------------------------------------
+1. Executor memory              | spark.executor.memory = "8g"
+2. Cores per executor           | spark.executor.cores = "4"
+3. Number of executors          | spark.executor.instances = "10"
+4. Shuffle partitions           | spark.sql.shuffle.partitions = "400"
+5. Dynamic resource allocation  | spark.dynamicAllocation.enabled = "true"
+6. Efficient file format        | df.write.parquet() / read.parquet()
+7. Compression                  | spark.io.compression.codec = "snappy"
+8. Caching / persistence        | df.cache() / df.persist(StorageLevel.X)</pre>
+
+            <p><b>Interview answer:</b> "I tune PySpark performance by right-sizing executor memory and cores, adjusting
+              shuffle partitions to match data size (roughly data_MB/128), enabling AQE for dynamic coalescing, using
+              Parquet with Snappy compression for efficient I/O, and caching only DataFrames that are reused across
+              multiple actions. For cluster-level scaling I enable dynamic resource allocation so executors spin up and
+              down based on load."</p>
+          </div>
+        </div>
+
+        <!-- NEW: Structured Streaming Windowed Aggregation -->
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you calculate per-user spending every 10 minutes from a streaming DataFrame in
+                PySpark Structured Streaming?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★★ Real-time pipeline / senior interview scenario</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Business scenario:</b> Events stream continuously from a payment system. Each event has
+              <code>user_id</code>, <code>event_time</code>, and <code>amount</code>. The business wants: <i>"Every 10
+                minutes, how much did each user spend?"</i></p>
+
+            <p><b>Input events (sample):</b></p>
+            <pre>user_id | event_time | amount
+--------|------------|-------
+U1      | 10:01:20   | 100
+U1      | 10:03:10   |  50
+U2      | 10:04:45   | 200
+U1      | 10:11:05   |  70
+U2      | 10:13:40   |  30</pre>
+
+            <p><b>Full production code:</b></p>
+            <pre>from pyspark.sql.functions import col, window, sum
+
+aggregated_df = (
+    df
+    .withWatermark("event_time", "15 minutes")        # ① handle late data
+    .groupBy(
+        window(col("event_time"), "10 minutes")        # ② 10-min time buckets
+          .alias("time_window"),
+        col("user_id")                                 # ③ group per user
+    )
+    .agg(
+        sum(col("amount")).alias("total_amount")       # ④ sum inside each group
+    )
+    .select(
+        col("time_window.start").alias("window_start"),# ⑤ flatten struct
+        col("time_window.end").alias("window_end"),
+        col("user_id"),
+        col("total_amount")
+    )
+)
+
+query = (
+    aggregated_df
+    .writeStream
+    .format("delta")                                  # ⑥ reliable sink
+    .outputMode("append")                             # ⑦ write only final rows
+    .option("checkpointLocation",
+            "/mnt/checkpoints/user_amount_10min")     # ⑧ fault tolerance
+    .start("/mnt/delta/user_amount_10min")            # ⑨ start query
+)</pre>
+
+            <p><b>Expected output in the Delta table:</b></p>
+            <pre>window_start | window_end | user_id | total_amount
+-------------|------------|---------|-------------
+10:00        | 10:10      | U1      | 150
+10:00        | 10:10      | U2      | 200
+10:10        | 10:20      | U1      |  70
+10:10        | 10:20      | U2      |  30</pre>
+
+            <p><b>Why each line exists:</b></p>
+
+            <p><b>① <code>withWatermark("event_time", "15 minutes")</code></b><br>
+              Spark must keep state (running totals) for every open window. Without a watermark, state grows forever and
+              the job eventually crashes.<br>
+              The watermark says: <i>"Allow data late by up to 15 minutes. After that, finalize old windows and drop
+                their state."</i><br>
+              It also enables <code>append</code> output mode — Spark only emits a window once it is confident no more
+              late data can arrive for it.</p>
+
+            <p><b>② <code>window(col("event_time"), "10 minutes")</code> — Tumbling window</b><br>
+              Creates fixed, non-overlapping 10-minute time buckets based on <i>when the business event actually
+                happened</i>, not when Spark received it. An event at <code>10:05</code> that arrives at
+              <code>10:20</code> is still placed in the <code>10:00–10:10</code> bucket — business-correct
+              aggregation.<br>
+              Each event belongs to exactly one window (tumbling). Use
+              <code>window(col("event_time"), "10 minutes", "5 minutes")</code> for a sliding window where one event can
+              belong to multiple overlapping windows.</p>
+
+            <p><b>③ <code>groupBy(window(...), col("user_id"))</code></b><br>
+              Groups data by <i>both</i> the time window and the user. Without <code>user_id</code> you would get one
+              total per window across all users, not per-user totals.</p>
+
+            <p><b>④ <code>agg(sum("amount").alias("total_amount"))</code></b><br>
+              Sums the amount inside each (window, user_id) group. The alias gives a clean column name instead of the
+              auto-generated <code>sum(amount)</code>.</p>
+
+            <p><b>⑤ <code>.select(col("time_window.start"), ...)</code></b><br>
+              <code>window()</code> returns a struct column: <code>{start: timestamp, end: timestamp}</code>. Flattening
+              it into separate <code>window_start</code>/<code>window_end</code> columns makes downstream queries and BI
+              tools easier to work with.
+            </p>
+
+            <p><b>⑥ <code>.format("delta")</code></b><br>
+              Delta Lake supports ACID transactions, schema enforcement, and reliable streaming + batch reads on the
+              same table. Better than CSV/JSON for production streaming output.</p>
+
+            <p><b>⑦ Output modes compared:</b></p>
+            <pre>Mode       | Behavior                                      | Use when
+-----------|-----------------------------------------------|---------------------------
+append     | Writes each window only once it is final      | Production Delta tables
+update     | Re-writes a row whenever its total changes    | Live dashboards / Kafka
+complete   | Dumps the entire result table every trigger   | Small result sets only</pre>
+
+            <p><code>append</code> + watermark is the correct combination for windowed aggregations written to Delta —
+              rows are written once, never updated.</p>
+
+            <p><b>⑧ <code>checkpointLocation</code></b><br>
+              Stores streaming metadata: what offsets have been processed, the current aggregation state per window, and
+              recovery information. If the cluster restarts, Spark resumes exactly from the last checkpoint. <i>Each
+                streaming query must have its own unique checkpoint path — never share checkpoints between queries.</i>
+            </p>
+
+            <p><b>⑨ <code>.start("/mnt/delta/user_amount_10min")</code></b><br>
+              Before <code>.start()</code> Spark has only built a plan. This call begins actual continuous execution and
+              returns a <code>StreamingQuery</code> object. Use <code>query.awaitTermination()</code> in production to
+              keep the driver alive.</p>
+
+            <p><b>Tumbling vs Sliding window quick reference:</b></p>
+            <pre># Tumbling — non-overlapping, each event in exactly one window
+window(col("event_time"), "10 minutes")
+# Windows: 10:00-10:10 | 10:10-10:20 | 10:20-10:30 ...
+
+# Sliding — overlapping, each event may belong to multiple windows
+window(col("event_time"), "10 minutes", "5 minutes")
+# Windows: 10:00-10:10, 10:05-10:15, 10:10-10:20, 10:15-10:25 ...</pre>
+
+            <p><b>Real business use-cases for this pattern:</b><br>
+              • <b>Payment monitoring</b> — total spend per user per 10 min<br>
+              • <b>Fraud detection</b> — <code>.filter(col("total_amount") &gt; 50000)</code> on the windowed result<br>
+              • <b>Usage-based billing</b> — sum consumption per customer per billing interval<br>
+              • <b>Real-time dashboards</b> — Delta table as a live dashboard source</p>
+
+            <p><b>Interview one-liner:</b> "I apply <code>withWatermark()</code> on <code>event_time</code> to bound
+              state growth and handle late data, use Spark's <code>window()</code> function with a 10-minute tumbling
+              window, <code>groupBy</code> on that window plus <code>user_id</code>, aggregate with
+              <code>sum(amount)</code>, then write to Delta using <code>writeStream</code> in <code>append</code> output
+              mode with a dedicated checkpoint location."</p>
+          </div>
+        </div>
+
       </div>
 
     </div>
 
-  </div>
+    <!-- ======================== PANDAS PANEL ======================== -->
+    <div id="panel-pandas" class="panel">
+      <div class="section">
+        <div class="section-title"><span class="badge badge-fire">🔥 Most Asked</span> Core Operations</div>
 
-  <!-- ======================== PANDAS PANEL ======================== -->
-  <div id="panel-pandas" class="panel">
-    <div class="section">
-      <div class="section-title"><span class="badge badge-fire">🔥 Most Asked</span> Core Operations</div>
-
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is the difference between <code>loc</code> and <code>iloc</code>?</div><div class="freq">★★★★★ Asked in almost every Pandas round</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b><code>loc</code></b>: Label-based indexing. Uses actual index labels or column names. Slice is <b>inclusive</b> on both ends.</p>
-          <p><b><code>iloc</code></b>: Integer position-based (0-indexed). Slice is <b>exclusive</b> on the right (Python convention).</p>
-          <pre>df.loc['a':'d', 'age']       # rows with labels 'a' through 'd' (inclusive)
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the difference between <code>loc</code> and <code>iloc</code>?</div>
+              <div class="freq">★★★★★ Asked in almost every Pandas round</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b><code>loc</code></b>: Label-based indexing. Uses actual index labels or column names. Slice is
+              <b>inclusive</b> on both ends.
+            </p>
+            <p><b><code>iloc</code></b>: Integer position-based (0-indexed). Slice is <b>exclusive</b> on the right
+              (Python convention).</p>
+            <pre>df.loc['a':'d', 'age']       # rows with labels 'a' through 'd' (inclusive)
 df.loc[df['age'] > 25]       # boolean mask
 df.iloc[0:3, 2]              # rows 0,1,2 — column at position 2 (NOT col 3)
 df.iloc[-1]                  # last row</pre>
-          <p><b>Key gotcha:</b> With a default integer index, <code>df.loc[0:3]</code> returns 4 rows (0,1,2,3) while <code>df.iloc[0:3]</code> returns 3 rows (0,1,2).</p>
+            <p><b>Key gotcha:</b> With a default integer index, <code>df.loc[0:3]</code> returns 4 rows (0,1,2,3) while
+              <code>df.iloc[0:3]</code> returns 3 rows (0,1,2).
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you filter rows using multiple conditions? Explain <code>query()</code> vs boolean indexing.<span class="new-badge">NEW</span></div><div class="freq">★★★★★ Daily Pandas usage</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b>Boolean indexing</b> – combine conditions with <code>&amp;</code> (and), <code>|</code> (or), <code>~</code> (not). Always wrap each condition in parentheses.</p>
-          <p><b><code>query()</code></b> – string expression, cleaner for complex filters. Supports <code>@variable</code> injection and uses <code>numexpr</code> for speed.</p>
-          <pre>min_age = 25
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you filter rows using multiple conditions? Explain <code>query()</code> vs
+                boolean indexing.<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★★ Daily Pandas usage</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Boolean indexing</b> – combine conditions with <code>&amp;</code> (and), <code>|</code> (or),
+              <code>~</code> (not). Always wrap each condition in parentheses.
+            </p>
+            <p><b><code>query()</code></b> – string expression, cleaner for complex filters. Supports
+              <code>@variable</code> injection and uses <code>numexpr</code> for speed.
+            </p>
+            <pre>min_age = 25
 # Boolean indexing
 df[(df['age'] > 25) & (df['dept'] == 'Engineering')]
 
@@ -819,15 +2009,24 @@ df.query("age > @min_age and dept == 'Engineering'")
 # NOT condition
 df[~df['status'].isin(['inactive', 'deleted'])]
 df.query("status not in ['inactive', 'deleted']")</pre>
-          <p><b>When to prefer <code>query()</code>:</b> Complex multi-condition filters where chained <code>&amp;</code>/<code>|</code> becomes unreadable.</p>
+            <p><b>When to prefer <code>query()</code>:</b> Complex multi-condition filters where chained
+              <code>&amp;</code>/<code>|</code> becomes unreadable.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is <code>SettingWithCopyWarning</code> and how do you fix it?</div><div class="freq">★★★★☆ Common production bug</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p>Occurs when you assign to a slice that Pandas suspects may be a <b>copy</b> of the original DataFrame. The assignment silently does nothing on the original data — a subtle bug.</p>
-          <pre># ❌ Problematic — may not update original df
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is <code>SettingWithCopyWarning</code> and how do you fix it?</div>
+              <div class="freq">★★★★☆ Common production bug</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>Occurs when you assign to a slice that Pandas suspects may be a <b>copy</b> of the original DataFrame.
+              The assignment silently does nothing on the original data — a subtle bug.</p>
+            <pre># ❌ Problematic — may not update original df
 df[df['age'] > 25]['salary'] = 0
 
 # ✅ Use .loc — always modifies the original
@@ -836,17 +2035,26 @@ df.loc[df['age'] > 25, 'salary'] = 0
 # ✅ Explicit copy when you intentionally want a separate DataFrame
 subset = df[df['age'] > 25].copy()
 subset['salary'] = 0</pre>
-          <p>In Pandas 2.0+ enable <code>pd.options.mode.copy_on_write = True</code> for safer defaults that eliminate this warning class entirely.</p>
+            <p>In Pandas 2.0+ enable <code>pd.options.mode.copy_on_write = True</code> for safer defaults that eliminate
+              this warning class entirely.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you handle missing values in Pandas?</div><div class="freq">★★★★★ Data quality staple</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b>Detection:</b> <code>df.isna().sum()</code> — count per column. <code>df.info()</code> — shows non-null counts.</p>
-          <p><b>Removal:</b> <code>df.dropna(subset=['critical_col'])</code> — drops rows where specified column is null.</p>
-          <p><b>Filling strategies:</b></p>
-          <pre># Fill with median
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you handle missing values in Pandas?</div>
+              <div class="freq">★★★★★ Data quality staple</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Detection:</b> <code>df.isna().sum()</code> — count per column. <code>df.info()</code> — shows
+              non-null counts.</p>
+            <p><b>Removal:</b> <code>df.dropna(subset=['critical_col'])</code> — drops rows where specified column is
+              null.</p>
+            <p><b>Filling strategies:</b></p>
+            <pre># Fill with median
 df['age'].fillna(df['age'].median())
 
 # Column-specific fill
@@ -857,14 +2065,21 @@ df['col'].fillna(method='ffill')
 
 # Linear interpolation
 df['col'].interpolate(method='linear')</pre>
-          <p><b>Best practice:</b> Always explain the business reason — dropping loses data; filling introduces assumptions.</p>
+            <p><b>Best practice:</b> Always explain the business reason — dropping loses data; filling introduces
+              assumptions.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you remove duplicate records in Pandas?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Data quality / ETL</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <pre># Exact duplicates across all columns
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you remove duplicate records in Pandas?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Data quality / ETL</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <pre># Exact duplicates across all columns
 df.drop_duplicates()
 
 # Duplicates based on a subset of columns
@@ -876,13 +2091,20 @@ df.sort_values('updated_at', ascending=False) \
 
 # Mark duplicates without removing (keep=False marks ALL occurrences)
 df['is_dup'] = df.duplicated(subset=['id'], keep=False)</pre>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">Explain <code>groupby()</code> with multiple aggregations using <code>agg()</code>.</div><div class="freq">★★★★★ Coding question</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <pre># Single aggregation
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">Explain <code>groupby()</code> with multiple aggregations using <code>agg()</code>.
+              </div>
+              <div class="freq">★★★★★ Coding question</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <pre># Single aggregation
 df.groupby('dept')['salary'].mean()
 
 # Multiple aggregations on a single column
@@ -894,14 +2116,23 @@ df.groupby('dept').agg(
     total_emp=('id',     'count'),
     max_age=  ('age',    'max')
 )</pre>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is <code>transform()</code> vs <code>agg()</code> in <code>groupby()</code>?<span class="new-badge">NEW</span></div><div class="freq">★★★★★ Coding interview staple</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b><code>agg()</code></b> – reduces each group to a single summary row (smaller DataFrame).<br><b><code>transform()</code></b> – returns a Series with the <b>same index as the original</b>, broadcasting group stats back to every row.</p>
-          <pre># agg — collapses to one row per group
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is <code>transform()</code> vs <code>agg()</code> in <code>groupby()</code>?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★★ Coding interview staple</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b><code>agg()</code></b> – reduces each group to a single summary row (smaller
+              DataFrame).<br><b><code>transform()</code></b> – returns a Series with the <b>same index as the
+                original</b>, broadcasting group stats back to every row.</p>
+            <pre># agg — collapses to one row per group
 df.groupby('dept')['salary'].agg(['mean', 'max'])
 
 # transform — keeps all original rows, adds dept avg as new column
@@ -909,15 +2140,25 @@ df['dept_avg_salary'] = df.groupby('dept')['salary'].transform('mean')
 
 # Now compute pct of dept salary — all rows preserved
 df['pct_of_dept'] = df['salary'] / df['dept_avg_salary']</pre>
-          <p><b>Rule:</b> Add group stats to original rows → <code>transform()</code>. Need a summary table → <code>agg()</code>.</p>
+            <p><b>Rule:</b> Add group stats to original rows → <code>transform()</code>. Need a summary table →
+              <code>agg()</code>.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you filter entire groups with <code>groupby().filter()</code>?<span class="new-badge">NEW</span></div><div class="freq">★★★☆☆ GroupBy advanced</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><code>filter()</code> keeps only the groups where a condition returns <code>True</code>. The entire group is kept or dropped — not individual rows.</p>
-          <pre># Only departments with more than 5 employees
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you filter entire groups with <code>groupby().filter()</code>?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★☆☆ GroupBy advanced</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><code>filter()</code> keeps only the groups where a condition returns <code>True</code>. The entire group
+              is kept or dropped — not individual rows.</p>
+            <pre># Only departments with more than 5 employees
 df.groupby('dept').filter(lambda g: len(g) > 5)
 
 # Only departments where average salary > 50000
@@ -925,19 +2166,27 @@ df.groupby('dept').filter(lambda g: g['salary'].mean() > 50000)
 
 # Groups where at least one employee is senior
 df.groupby('dept').filter(lambda g: (g['level'] == 'senior').any())</pre>
-          <p><b>Important:</b> Returns original rows (not aggregated). Result is a subset of the full DataFrame.</p>
+            <p><b>Important:</b> Returns original rows (not aggregated). Result is a subset of the full DataFrame.</p>
+          </div>
         </div>
+
       </div>
 
-    </div>
+      <div class="section">
+        <div class="section-title"><span class="badge badge-mid">🔧 Data Manipulation</span> Reshaping &amp; Functions
+        </div>
 
-    <div class="section">
-      <div class="section-title"><span class="badge badge-mid">🔧 Data Manipulation</span> Reshaping &amp; Functions</div>
-
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you select columns by data type or name pattern?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Data cleaning utility</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <pre># Numeric columns only
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you select columns by data type or name pattern?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Data cleaning utility</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <pre># Numeric columns only
 df.select_dtypes(include='number')
 
 # Object (string) columns
@@ -951,14 +2200,23 @@ df.loc[:, df.columns.str.contains('amount')]
 
 # Columns starting with 'customer_' via regex
 df.filter(regex='^customer_.*')</pre>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you convert data types and handle errors in Pandas?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Data ingestion / cleaning</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p>Use <code>pd.to_datetime()</code>, <code>pd.to_numeric()</code>, or <code>.astype()</code>. The <code>errors</code> parameter controls what happens to invalid values.</p>
-          <pre># String → datetime; invalid values become NaT (not an error)
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you convert data types and handle errors in Pandas?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Data ingestion / cleaning</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>Use <code>pd.to_datetime()</code>, <code>pd.to_numeric()</code>, or <code>.astype()</code>. The
+              <code>errors</code> parameter controls what happens to invalid values.
+            </p>
+            <pre># String → datetime; invalid values become NaT (not an error)
 df['date'] = pd.to_datetime(df['date'], errors='coerce')
 
 # String → numeric; invalid values become NaN
@@ -969,14 +2227,26 @@ df['count'] = df['count'].astype('Int32')
 
 # Memory-efficient category encoding
 df['status'] = df['status'].astype('category')</pre>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is the difference between <code>apply()</code>, <code>map()</code>, and <code>applymap()</code>?</div><div class="freq">★★★★☆ Functional operations</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b><code>Series.map()</code></b> – element-wise on a single Series. Best for value substitution or lookup dictionaries.<br><b><code>DataFrame.apply()</code></b> – applies a function along rows (<code>axis=1</code>) or columns (<code>axis=0</code>). Receives a Series.<br><b><code>DataFrame.map()</code></b> (formerly <code>applymap</code> in Pandas &lt;2.1) – element-wise on every cell of the DataFrame.</p>
-          <pre># map: replace values using a dict
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the difference between <code>apply()</code>, <code>map()</code>, and
+                <code>applymap()</code>?
+              </div>
+              <div class="freq">★★★★☆ Functional operations</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b><code>Series.map()</code></b> – element-wise on a single Series. Best for value substitution or lookup
+              dictionaries.<br><b><code>DataFrame.apply()</code></b> – applies a function along rows
+              (<code>axis=1</code>) or columns (<code>axis=0</code>). Receives a
+              Series.<br><b><code>DataFrame.map()</code></b> (formerly <code>applymap</code> in Pandas &lt;2.1) –
+              element-wise on every cell of the DataFrame.</p>
+            <pre># map: replace values using a dict
 df['grade'] = df['score'].map({90: 'A', 80: 'B', 70: 'C'})
 
 # apply: row-wise custom computation
@@ -984,15 +2254,25 @@ df['total'] = df.apply(lambda x: x['price'] * x['qty'], axis=1)
 
 # DataFrame.map: round every cell
 df[['a','b']].map(lambda x: round(x, 2))</pre>
-          <p><b>Performance note:</b> All three are slower than vectorized operations. Prefer <code>np.where()</code>, <code>np.select()</code>, or built-in Series methods when possible.</p>
+            <p><b>Performance note:</b> All three are slower than vectorized operations. Prefer <code>np.where()</code>,
+              <code>np.select()</code>, or built-in Series methods when possible.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you use <code>np.select()</code> for multiple conditions (vectorized if-else)?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Vectorization best practice</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><code>np.select()</code> is a vectorized way to assign values based on multiple conditions — much faster than chaining <code>np.where()</code> or using <code>.apply()</code>.</p>
-          <pre>import numpy as np
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you use <code>np.select()</code> for multiple conditions (vectorized
+                if-else)?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Vectorization best practice</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><code>np.select()</code> is a vectorized way to assign values based on multiple conditions — much faster
+              than chaining <code>np.where()</code> or using <code>.apply()</code>.</p>
+            <pre>import numpy as np
 
 conditions = [df['amount'] > 1000, df['amount'] > 500]
 choices    = ['high',              'mid']
@@ -1002,15 +2282,26 @@ df['label'] = np.select(conditions, choices, default='low')
 df['label'] = df['amount'].apply(
     lambda x: 'high' if x > 1000 else 'mid' if x > 500 else 'low'
 )</pre>
-          <p><b>Key:</b> Conditions are evaluated in order — first match wins. Always provide a <code>default</code> for rows matching none.</p>
+            <p><b>Key:</b> Conditions are evaluated in order — first match wins. Always provide a <code>default</code>
+              for rows matching none.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">Explain <code>merge()</code>, <code>join()</code>, and <code>concat()</code> with examples.</div><div class="freq">★★★★★ Very common coding question</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b><code>merge()</code></b> – SQL-style join on columns or indexes. Most flexible.<br><b><code>join()</code></b> – joins on index by default. Convenient shortcut when DataFrames share an index.<br><b><code>concat()</code></b> – stacks DataFrames vertically (append rows) or horizontally without key matching.</p>
-          <pre># merge on a common column — left join
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">Explain <code>merge()</code>, <code>join()</code>, and <code>concat()</code> with
+                examples.</div>
+              <div class="freq">★★★★★ Very common coding question</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b><code>merge()</code></b> – SQL-style join on columns or indexes. Most
+              flexible.<br><b><code>join()</code></b> – joins on index by default. Convenient shortcut when DataFrames
+              share an index.<br><b><code>concat()</code></b> – stacks DataFrames vertically (append rows) or
+              horizontally without key matching.</p>
+            <pre># merge on a common column — left join
 pd.merge(orders, customers, on='customer_id', how='left')
 
 # join on index
@@ -1021,14 +2312,22 @@ pd.concat([df1, df2], axis=0, ignore_index=True)
 
 # concat horizontally (side by side)
 pd.concat([df1, df2], axis=1)</pre>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you validate merges to catch unexpected data loss?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Production data quality</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p>Use <code>indicator=True</code> in <code>merge()</code> — it adds a <code>_merge</code> column showing whether each row came from <code>left_only</code>, <code>right_only</code>, or <code>both</code>.</p>
-          <pre>result = pd.merge(left, right, on='id', how='outer', indicator=True)
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you validate merges to catch unexpected data loss?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Production data quality</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>Use <code>indicator=True</code> in <code>merge()</code> — it adds a <code>_merge</code> column showing
+              whether each row came from <code>left_only</code>, <code>right_only</code>, or <code>both</code>.</p>
+            <pre>result = pd.merge(left, right, on='id', how='outer', indicator=True)
 result['_merge'].value_counts()
 # left_only     12   ← rows only in left (unmatched)
 # right_only     5   ← rows only in right (unmatched)
@@ -1036,17 +2335,28 @@ result['_merge'].value_counts()
 
 # Assert no data loss
 assert (result['_merge'] == 'both').all(), "Unmatched rows found!"</pre>
-          <p>Also use the <code>validate</code> parameter to enforce join cardinality:</p>
-          <pre>pd.merge(df1, df2, on='id', validate='one_to_one')
+            <p>Also use the <code>validate</code> parameter to enforce join cardinality:</p>
+            <pre>pd.merge(df1, df2, on='id', validate='one_to_one')
 # Raises MergeError if duplicates exist on key in either side</pre>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is <code>pivot_table()</code> and how does it differ from <code>pivot()</code>?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Reshaping / reporting</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b><code>pivot()</code></b> – reshapes without aggregation. <b>Fails</b> if there are duplicate entries for the same index/column combination.<br><b><code>pivot_table()</code></b> – handles duplicates with an aggregation function (default <code>mean</code>). Supports <code>fill_value</code> for missing combinations.</p>
-          <pre># pivot — fails on duplicate (region, product) pairs
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is <code>pivot_table()</code> and how does it differ from
+                <code>pivot()</code>?<span class="new-badge">NEW</span>
+              </div>
+              <div class="freq">★★★★☆ Reshaping / reporting</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b><code>pivot()</code></b> – reshapes without aggregation. <b>Fails</b> if there are duplicate entries
+              for the same index/column combination.<br><b><code>pivot_table()</code></b> – handles duplicates with an
+              aggregation function (default <code>mean</code>). Supports <code>fill_value</code> for missing
+              combinations.</p>
+            <pre># pivot — fails on duplicate (region, product) pairs
 df.pivot(index='region', columns='product', values='revenue')
 
 # pivot_table — safe with duplicates; aggregates and fills gaps
@@ -1054,14 +2364,22 @@ df.pivot_table(
     index='region', columns='product', values='revenue',
     aggfunc='sum', fill_value=0
 )</pre>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you use <code>melt()</code> to convert wide data to long format?<span class="new-badge">NEW</span></div><div class="freq">★★★☆☆ Data reshaping</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><code>melt()</code> "unpivots" a wide DataFrame into a long format by turning column headers into row values. Essential when feeding data into plotting libraries or ML pipelines expecting long format.</p>
-          <pre>df_wide = pd.DataFrame({
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you use <code>melt()</code> to convert wide data to long format?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★☆☆ Data reshaping</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><code>melt()</code> "unpivots" a wide DataFrame into a long format by turning column headers into row
+              values. Essential when feeding data into plotting libraries or ML pipelines expecting long format.</p>
+            <pre>df_wide = pd.DataFrame({
     'name': ['Alice', 'Bob'],
     'Jan':  [1000, 1200],
     'Feb':  [1100,  900]
@@ -1077,14 +2395,24 @@ df_long = df_wide.melt(
 # 1    Bob   Jan   1200
 # 2  Alice   Feb   1100
 # 3    Bob   Feb    900</pre>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">Explain <code>stack()</code>, <code>unstack()</code>, and <code>explode()</code>.<span class="new-badge">NEW</span></div><div class="freq">★★★☆☆ Hierarchical reshaping</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b><code>stack()</code></b> – moves columns into a row MultiIndex (DataFrame → Series). Compresses horizontally.<br><b><code>unstack()</code></b> – reverse; moves the innermost row index level into columns.<br><b><code>explode()</code></b> – turns each element of a list-like column into a separate row.</p>
-          <pre># stack / unstack
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">Explain <code>stack()</code>, <code>unstack()</code>, and <code>explode()</code>.<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★☆☆ Hierarchical reshaping</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b><code>stack()</code></b> – moves columns into a row MultiIndex (DataFrame → Series). Compresses
+              horizontally.<br><b><code>unstack()</code></b> – reverse; moves the innermost row index level into
+              columns.<br><b><code>explode()</code></b> – turns each element of a list-like column into a separate row.
+            </p>
+            <pre># stack / unstack
 df.stack()    # columns → innermost row index
 df.unstack()  # innermost row index → columns
 
@@ -1099,13 +2427,19 @@ df.explode('skills')
 # 0  Alice     SQL
 # 1    Bob   Spark
 # 1    Bob   Kafka</pre>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you work with MultiIndex DataFrames?<span class="new-badge">NEW</span></div><div class="freq">★★★☆☆ Advanced indexing</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <pre># Access with tuple
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you work with MultiIndex DataFrames?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★☆☆ Advanced indexing</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <pre># Access with tuple
 df.loc[('dept_a', 'user_1')]
 
 # Cross-section — select all rows at outer level
@@ -1120,14 +2454,23 @@ df.reset_index(inplace=True)
 # Create MultiIndex from tuples
 idx = pd.MultiIndex.from_tuples([('a','x'),('a','y'),('b','x')])
 df.index = idx</pre>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">What is method chaining and how does <code>pipe()</code> help?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Clean code / readability</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p>Method chaining applies multiple transformations in a single expression without intermediate variables. <code>pipe()</code> injects custom functions into the chain cleanly.</p>
-          <pre># Method chaining — readable pipeline
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is method chaining and how does <code>pipe()</code> help?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Clean code / readability</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>Method chaining applies multiple transformations in a single expression without intermediate variables.
+              <code>pipe()</code> injects custom functions into the chain cleanly.
+            </p>
+            <pre># Method chaining — readable pipeline
 result = (df
     .query("age > 25")
     .assign(salary_k=lambda x: x['salary'] / 1000)
@@ -1141,14 +2484,23 @@ def standardize(df, col):
     return df.assign(**{col: (df[col] - df[col].mean()) / df[col].std()})
 
 df.pipe(standardize, 'amount').query("amount > 1")</pre>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">Explain <code>pd.cut()</code> vs <code>pd.qcut()</code>.<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Feature engineering</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b><code>pd.cut()</code></b> – bins data into <b>equal-width</b> intervals that you define (based on value ranges).<br><b><code>pd.qcut()</code></b> – bins data into <b>equal-frequency</b> quantile bins (each bin gets roughly the same number of records).</p>
-          <pre># pd.cut — fixed value boundaries
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">Explain <code>pd.cut()</code> vs <code>pd.qcut()</code>.<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Feature engineering</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b><code>pd.cut()</code></b> – bins data into <b>equal-width</b> intervals that you define (based on
+              value ranges).<br><b><code>pd.qcut()</code></b> – bins data into <b>equal-frequency</b> quantile bins
+              (each bin gets roughly the same number of records).</p>
+            <pre># pd.cut — fixed value boundaries
 df['age_group'] = pd.cut(
     df['age'], bins=[0, 18, 35, 60, 100],
     labels=['teen', 'young', 'mid', 'senior']
@@ -1161,20 +2513,29 @@ df['salary_quartile'] = pd.qcut(
 
 # Check distribution
 df['salary_quartile'].value_counts()  # each bucket ≈ equal count</pre>
-          <p><b>Use cut</b> for domain-driven ranges (age groups). <b>Use qcut</b> for percentile-based segmentation (top/bottom quartile).</p>
+            <p><b>Use cut</b> for domain-driven ranges (age groups). <b>Use qcut</b> for percentile-based segmentation
+              (top/bottom quartile).</p>
+          </div>
         </div>
-      </div>
 
-    </div><!-- end Data Manipulation section -->
+      </div><!-- end Data Manipulation section -->
 
-    <div class="section">
-      <div class="section-title"><span class="badge badge-adv">📅 Time Series</span> Temporal Operations</div>
+      <div class="section">
+        <div class="section-title"><span class="badge badge-adv">📅 Time Series</span> Temporal Operations</div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you aggregate time series data with <code>resample()</code>?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Time series pipelines</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p>First set a <code>DatetimeIndex</code>, then use <code>resample()</code> with a frequency string and an aggregation function.</p>
-          <pre>df.set_index('timestamp', inplace=True)
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you aggregate time series data with <code>resample()</code>?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Time series pipelines</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>First set a <code>DatetimeIndex</code>, then use <code>resample()</code> with a frequency string and an
+              aggregation function.</p>
+            <pre>df.set_index('timestamp', inplace=True)
 
 df.resample('D')['sales'].sum()    # daily total
 df.resample('W')['sales'].mean()   # weekly average
@@ -1182,27 +2543,45 @@ df.resample('M').agg({'sales':'sum', 'units':'count'})
 
 # Fill gaps in sparse time series
 df.resample('D').sum().fillna(0)   # missing days → 0</pre>
-          <p><b>Common frequency strings:</b> <code>'D'</code> (day), <code>'W'</code> (week), <code>'M'</code> (month end), <code>'MS'</code> (month start), <code>'H'</code> (hour), <code>'T'</code> (minute).</p>
+            <p><b>Common frequency strings:</b> <code>'D'</code> (day), <code>'W'</code> (week), <code>'M'</code> (month
+              end), <code>'MS'</code> (month start), <code>'H'</code> (hour), <code>'T'</code> (minute).</p>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">Explain <code>rolling()</code>, <code>expanding()</code>, and <code>ewm()</code>.<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Moving averages &amp; smoothing</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b><code>rolling(n)</code></b> – fixed-size sliding window of last n rows.<br><b><code>expanding()</code></b> – cumulative window growing from the first row (all history).<br><b><code>ewm(span=n)</code></b> – exponentially weighted; recent values have a higher weight.</p>
-          <pre>df['7d_avg']  = df['sales'].rolling(7).mean()       # last 7 days avg
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">Explain <code>rolling()</code>, <code>expanding()</code>, and <code>ewm()</code>.<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Moving averages &amp; smoothing</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b><code>rolling(n)</code></b> – fixed-size sliding window of last n
+              rows.<br><b><code>expanding()</code></b> – cumulative window growing from the first row (all
+              history).<br><b><code>ewm(span=n)</code></b> – exponentially weighted; recent values have a higher weight.
+            </p>
+            <pre>df['7d_avg']  = df['sales'].rolling(7).mean()       # last 7 days avg
 df['cum_avg'] = df['sales'].expanding().mean()      # running average
 df['ema_14']  = df['sales'].ewm(span=14).mean()     # EMA over 14 periods
 
 # Rolling with min_periods (avoid NaN when window not full)
 df['3d_sum'] = df['sales'].rolling(3, min_periods=1).sum()</pre>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you calculate period-over-period changes with <code>shift()</code>?<span class="new-badge">NEW</span></div><div class="freq">★★★★☆ Growth metrics / reporting</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <pre># Lag by 1 period (previous row's value)
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you calculate period-over-period changes with <code>shift()</code>?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Growth metrics / reporting</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <pre># Lag by 1 period (previous row's value)
 df['prev_sales']  = df['sales'].shift(1)
 
 # Percentage change (MoM, YoY, etc.)
@@ -1214,18 +2593,24 @@ df['diff'] = df['sales'].diff()
 
 # Lead — next period's value (for forecasting labels)
 df['next_sales'] = df['sales'].shift(-1)</pre>
+          </div>
         </div>
-      </div>
 
-    </div><!-- end Time Series section -->
+      </div><!-- end Time Series section -->
 
-    <div class="section">
-      <div class="section-title"><span class="badge badge-new">⚡ Production</span> Performance &amp; Scale</div>
+      <div class="section">
+        <div class="section-title"><span class="badge badge-new">⚡ Production</span> Performance &amp; Scale</div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you reduce memory usage in Pandas?<span class="new-badge">NEW</span></div><div class="freq">★★★★★ Large dataset handling</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <pre># Downcast numerics — int64 → int8/int16 etc.
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you reduce memory usage in Pandas?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★★ Large dataset handling</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <pre># Downcast numerics — int64 → int8/int16 etc.
 df['age']   = pd.to_numeric(df['age'],   downcast='integer')
 df['score'] = pd.to_numeric(df['score'], downcast='float')
 
@@ -1245,13 +2630,20 @@ df = pd.read_csv('big.csv',
 # Read in chunks for very large files
 for chunk in pd.read_csv('huge.csv', chunksize=100_000):
     process(chunk)</pre>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">How do you read and write CSV, Parquet, and SQL in Pandas?<span class="new-badge">NEW</span></div><div class="freq">★★★★★ Production I/O</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <pre># CSV
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you read and write CSV, Parquet, and SQL in Pandas?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★★ Production I/O</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <pre># CSV
 df = pd.read_csv('data.csv',
     dtype={'id': int}, parse_dates=['ts'], usecols=['id','amount','ts'])
 df.to_csv('out.csv', index=False)
@@ -1266,17 +2658,28 @@ engine = create_engine('postgresql://user:pass@host/db')
 df = pd.read_sql('SELECT * FROM orders WHERE status=%(s)s',
                  engine, params={'s': 'active'})
 df.to_sql('orders_v2', engine, if_exists='replace', index=False)</pre>
-          <p><b>Why Parquet over CSV:</b> Columnar reads, 75% smaller files, embedded schema (no type inference), predicate pushdown. Always prefer Parquet for automated pipelines.</p>
+            <p><b>Why Parquet over CSV:</b> Columnar reads, 75% smaller files, embedded schema (no type inference),
+              predicate pushdown. Always prefer Parquet for automated pipelines.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="q-card" onclick="toggle(this)">
-        <div class="q-header"><div class="q-left"><div class="q-text">When would you migrate from Pandas to PySpark or Dask?<span class="new-badge">NEW</span></div><div class="freq">★★★★★ Senior-level design decision</div></div><div class="q-toggle">+</div></div>
-        <div class="q-answer">
-          <p><b>Pandas</b> – ideal for data that fits in single-machine memory (&lt; a few GB) and for quick exploration or ad-hoc analysis.</p>
-          <p><b>PySpark</b> – the choice when data exceeds 10 GB, requires distributed storage (S3, HDFS), or needs production fault tolerance and parallelism across a cluster.</p>
-          <p><b>Dask</b> – provides a Pandas-like API that scales across cores or a small cluster. Good for intermediate datasets (&lt; ~100 GB on one machine) without the full Spark overhead.</p>
-          <pre># Pandas — works fine in memory
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">When would you migrate from Pandas to PySpark or Dask?<span
+                  class="new-badge">NEW</span></div>
+              <div class="freq">★★★★★ Senior-level design decision</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Pandas</b> – ideal for data that fits in single-machine memory (&lt; a few GB) and for quick
+              exploration or ad-hoc analysis.</p>
+            <p><b>PySpark</b> – the choice when data exceeds 10 GB, requires distributed storage (S3, HDFS), or needs
+              production fault tolerance and parallelism across a cluster.</p>
+            <p><b>Dask</b> – provides a Pandas-like API that scales across cores or a small cluster. Good for
+              intermediate datasets (&lt; ~100 GB on one machine) without the full Spark overhead.</p>
+            <pre># Pandas — works fine in memory
 df = pd.read_parquet('data.parquet')   # 2 GB file — ok
 
 # Dask — parallel Pandas across multiple cores
@@ -1286,67 +2689,70 @@ df.groupby('dept')['salary'].mean().compute()
 
 # PySpark — true distributed cluster
 spark.read.parquet('s3://bucket/data/').groupBy('dept').mean('salary')</pre>
-          <p><b>Rule of thumb:</b> If a single <code>pd.read_csv()</code> causes MemoryError or takes more than 5 minutes, move to PySpark or Dask. If you need ACID transactions or streaming, use PySpark + Delta Lake.</p>
+            <p><b>Rule of thumb:</b> If a single <code>pd.read_csv()</code> causes MemoryError or takes more than 5
+              minutes, move to PySpark or Dask. If you need ACID transactions or streaming, use PySpark + Delta Lake.
+            </p>
+          </div>
         </div>
-      </div>
 
-    </div><!-- end Production section -->
-  </div><!-- end pandas panel -->
+      </div><!-- end Production section -->
+    </div><!-- end pandas panel -->
 
-</div>
+  </div>
 
-<script>
-let opened = new Set();
-let total = document.querySelectorAll(".q-card").length;
-document.getElementById("s-total").textContent = total;
+  <script>
+    let opened = new Set();
+    let total = document.querySelectorAll(".q-card").length;
+    document.getElementById("s-total").textContent = total;
 
-function toggle(card){
-  card.classList.toggle("open");
-  const idx = Array.from(document.querySelectorAll(".q-card")).indexOf(card);
-  if(card.classList.contains("open")) opened.add(idx);
-  updateProgress();
-}
+    function toggle(card) {
+      card.classList.toggle("open");
+      const idx = Array.from(document.querySelectorAll(".q-card")).indexOf(card);
+      if (card.classList.contains("open")) opened.add(idx);
+      updateProgress();
+    }
 
-function updateProgress(){
-  document.getElementById("s-opened").textContent = opened.size;
-  const pct = Math.round((opened.size / total) * 100);
-  document.getElementById("prog").style.width = pct + "%";
-}
+    function updateProgress() {
+      document.getElementById("s-opened").textContent = opened.size;
+      const pct = Math.round((opened.size / total) * 100);
+      document.getElementById("prog").style.width = pct + "%";
+    }
 
-function switchTab(name, e){
-  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  document.getElementById("panel-"+name).classList.add("active");
-  if(e) e.target.classList.add("active");
-  document.getElementById("search").value = "";
-  showAll();
-}
+    function switchTab(name, e) {
+      document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.getElementById("panel-" + name).classList.add("active");
+      if (e) e.target.classList.add("active");
+      document.getElementById("search").value = "";
+      showAll();
+    }
 
-function filterSearch(val){
-  const q = val.toLowerCase().trim();
-  document.querySelectorAll(".q-card").forEach(card=>{
-    const text = card.querySelector(".q-text").textContent.toLowerCase();
-    const ans = card.querySelector(".q-answer").textContent.toLowerCase();
-    card.style.display = (!q || text.includes(q) || ans.includes(q)) ? "" : "none";
-  });
-}
+    function filterSearch(val) {
+      const q = val.toLowerCase().trim();
+      document.querySelectorAll(".q-card").forEach(card => {
+        const text = card.querySelector(".q-text").textContent.toLowerCase();
+        const ans = card.querySelector(".q-answer").textContent.toLowerCase();
+        card.style.display = (!q || text.includes(q) || ans.includes(q)) ? "" : "none";
+      });
+    }
 
-function showAll(){
-  document.querySelectorAll(".q-card").forEach(c=>c.style.display="");
-}
+    function showAll() {
+      document.querySelectorAll(".q-card").forEach(c => c.style.display = "");
+    }
 
-function toggleTheme(){ }
-function setTheme(t, e){
-  e.stopPropagation();
-  document.documentElement.setAttribute("data-theme", t);
-  document.getElementById("btn-dark").classList.toggle("active", t==="dark");
-  document.getElementById("btn-light").classList.toggle("active", t==="light");
-}
+    function toggleTheme() { }
+    function setTheme(t, e) {
+      e.stopPropagation();
+      document.documentElement.setAttribute("data-theme", t);
+      document.getElementById("btn-dark").classList.toggle("active", t === "dark");
+      document.getElementById("btn-light").classList.toggle("active", t === "light");
+    }
 
-// Default to dark
-document.getElementById("btn-dark").classList.add("active");
-document.getElementById("btn-light").classList.remove("active");
-document.documentElement.setAttribute("data-theme","dark");
-</script>
+    // Default to dark
+    document.getElementById("btn-dark").classList.add("active");
+    document.getElementById("btn-light").classList.remove("active");
+    document.documentElement.setAttribute("data-theme", "dark");
+  </script>
 </body>
+
 </html>
