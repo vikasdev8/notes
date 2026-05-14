@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PySpark & Pandas Interview Questions — 4 YOE</title>
+  <title>PySpark, Pandas &amp; dbt Interview Questions — 4 YOE</title>
   <link
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;500;600&display=swap"
     rel="stylesheet">
@@ -475,14 +475,13 @@
 
     <div class="header">
       <div class="header-top">
-        <div class="title">PySpark & Pandas <span>Interview Kit</span></div>
+        <div class="title">PySpark, Pandas &amp; <span>dbt Interview Kit</span></div>
         <div class="theme-toggle" onclick="toggleTheme()">
           <button class="theme-btn" id="btn-dark" onclick="setTheme('dark',event)">🌙 Dark</button>
           <button class="theme-btn active" id="btn-light" onclick="setTheme('light',event)">☀️ Light</button>
         </div>
       </div>
-      <div class="subtitle">4 Years Experience · Now covers join strategies, bucketing, AQE · Click any card to reveal
-        answer</div>
+      <div class="subtitle">4 Years Experience · PySpark, Pandas &amp; dbt · Click any card to reveal answer</div>
     </div>
 
     <div class="stats">
@@ -519,6 +518,7 @@
     <div class="tabs">
       <button class="tab active" onclick="switchTab('pyspark',event)">⚡ PySpark (25+)</button>
       <button class="tab" onclick="switchTab('pandas',event)">🐼 Pandas (20+)</button>
+      <button class="tab" onclick="switchTab('dbt',event)">🔧 dbt Tool (10+)</button>
     </div>
 
     <!-- ======================== PYSPARK PANEL ======================== -->
@@ -2758,6 +2758,806 @@ spark.read.parquet('s3://bucket/data/').groupBy('dept').mean('salary')</pre>
 
       </div><!-- end Production section -->
     </div><!-- end pandas panel -->
+
+    <!-- ======================== DBT PANEL ======================== -->
+    <div id="panel-dbt" class="panel">
+
+      <div class="section">
+        <div class="section-title"><span class="badge badge-fire">🔥 Most Asked</span> Core Concepts</div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is dbt and where does it fit in a data pipeline?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★★ Asked in almost every data engineering round</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>dbt</b> (data build tool) is a <b>transformation tool</b> used in modern data engineering. It helps you transform raw data into clean, trusted, analytics-ready tables using <b>SQL and software engineering practices</b> (version control, testing, documentation, modularity).</p>
+            <p>dbt fits into the <b>T (Transform)</b> step of the ELT pattern. It does <b>not</b> extract data from APIs or load raw data — it transforms data that is already inside your data warehouse.</p>
+            <pre>Data Sources
+    ↓
+Ingestion Tool (Fivetran, Airbyte)    ← Extract + Load
+    ↓
+Raw Data Warehouse (Snowflake, BigQuery, Redshift)
+    ↓
+dbt Transformation                    ← dbt lives here
+    ↓
+Clean Models / Marts
+    ↓
+BI Tools / Dashboards / ML</pre>
+            <p><b>Key idea:</b> You write <code>SELECT</code> statements. dbt handles creating views, tables, and incremental models in your warehouse. dbt does not write INSERT/UPDATE/CREATE — it compiles your SQL into those statements automatically.</p>
+            <pre>-- models/stg_orders.sql
+select
+    order_id,
+    customer_id,
+    coalesce(amount, 0) as amount,
+    cast(order_date as date) as order_date
+from raw_orders</pre>
+            <p>Run <code>dbt run</code> and dbt creates this as a view or table in your warehouse.</p>
+          </div>
+        </div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is a dbt model and what are the model layers?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★★ Core dbt structure</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>A <b>dbt model</b> is a <code>.sql</code> file containing a <code>SELECT</code> query. dbt runs this SQL and creates a view, table, or other database object in your warehouse.</p>
+            <p>A well-structured dbt project uses <b>four layers</b>:</p>
+            <p><b>1. Source Layer</b> — Raw data already loaded into the warehouse. Referenced using <code>source()</code>.</p>
+            <pre>raw.shopify.orders   raw.stripe.payments</pre>
+            <p><b>2. Staging Layer</b> — Clean and rename raw columns. One model per source table.</p>
+            <pre>-- models/staging/stg_orders.sql
+select
+    id as order_id,
+    customer_id,
+    order_date,
+    status
+from {{ source('shopify', 'orders') }}</pre>
+            <p><b>3. Intermediate Layer</b> — Business logic, joins between staging models.</p>
+            <pre>-- models/intermediate/int_orders_with_customers.sql
+select o.order_id, o.order_date, c.customer_name
+from {{ ref('stg_orders') }} o
+left join {{ ref('stg_customers') }} c on o.customer_id = c.customer_id</pre>
+            <p><b>4. Mart Layer</b> — Final business-ready tables for BI tools.</p>
+            <pre>-- models/marts/fct_orders.sql
+{{ config(materialized='table') }}
+select customer_id, count(*) as total_orders, sum(amount) as total_amount
+from {{ ref('int_orders_with_customers') }}
+group by customer_id</pre>
+            <p><b>Naming convention:</b> <code>stg_</code> for staging, <code>int_</code> for intermediate, <code>fct_</code> for fact tables, <code>dim_</code> for dimensions.</p>
+          </div>
+        </div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the <code>ref()</code> function and why is it important?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★★ Most important dbt function</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><code>ref()</code> is used to reference another dbt model inside a SQL file. It is the most important dbt function.</p>
+            <pre>select * from {{ ref('stg_orders') }}</pre>
+            <p>dbt compiles this into the actual database path:</p>
+            <pre>select * from analytics.dev.stg_orders</pre>
+            <p><b>Why ref() is critical:</b></p>
+            <p>1. <b>Dependency graph (DAG):</b> dbt uses <code>ref()</code> to understand which model depends on which, building a Directed Acyclic Graph.</p>
+            <p>2. <b>Correct execution order:</b> dbt runs models in the right order automatically — no manual orchestration needed.</p>
+            <p>3. <b>Environment resolution:</b> <code>ref()</code> resolves to the correct schema depending on your target (dev vs prod).</p>
+            <p>4. <b>Refactoring safety:</b> Rename a model once — all downstream <code>ref()</code> calls update automatically at compile time.</p>
+            <pre>-- BAD: hardcoded schema
+select * from analytics.dev.stg_orders
+
+-- GOOD: uses ref()
+select * from {{ ref('stg_orders') }}</pre>
+          </div>
+        </div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the <code>source()</code> function and why use it over hardcoded table names?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Sources and lineage</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>A <b>source</b> represents raw data already loaded into the warehouse (by Fivetran, Airbyte, etc.). Instead of hardcoding table names, you define sources in YAML and reference them with <code>source()</code>.</p>
+            <p><b>Define in YAML:</b></p>
+            <pre>-- models/staging/sources.yml
+version: 2
+sources:
+  - name: shopify
+    database: raw
+    schema: shopify
+    tables:
+      - name: orders
+      - name: customers</pre>
+            <p><b>Use in SQL:</b></p>
+            <pre>select * from {{ source('shopify', 'orders') }}</pre>
+            <p><b>Why use source() instead of hardcoding?</b></p>
+            <pre>Feature          | Benefit
+-----------------|-------------------------------------
+Source freshness | Check if raw data is updated on time
+Documentation    | Describe raw tables in dbt docs
+Lineage          | DAG shows where data originates
+Cleaner SQL      | Avoid hardcoding database/schema names
+Testing          | Apply dbt tests to source tables</pre>
+            <p>Run <code>dbt source freshness</code> to check whether raw source data is arriving on schedule.</p>
+          </div>
+        </div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What are dbt materializations? Explain view, table, incremental, and ephemeral.<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★★ Core concept — always asked</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>A <b>materialization</b> tells dbt <i>how</i> to create a model in the warehouse — as a view, physical table, incremental table, or just a CTE.</p>
+            <pre>Materialization   | Meaning                          | Use Case
+------------------|----------------------------------|-------------------------------
+view              | Database view (no stored data)   | Lightweight, always fresh
+table             | Physical table (full refresh)    | Fast dashboard queries
+incremental       | Updates only new/changed rows    | Large datasets
+ephemeral         | CTE injected into downstream SQL | Small reusable logic</pre>
+            <p><b>View:</b></p>
+            <pre>{{ config(materialized='view') }}
+select * from {{ source('shopify', 'orders') }}</pre>
+            <p><b>Table:</b></p>
+            <pre>{{ config(materialized='table') }}
+select customer_id, count(*) as total_orders
+from {{ ref('stg_orders') }}
+group by customer_id</pre>
+            <p><b>Incremental</b> — only processes new or changed records:</p>
+            <pre>{{ config(materialized='incremental', unique_key='order_id') }}
+select order_id, customer_id, order_date, amount
+from {{ ref('stg_orders') }}
+{% if is_incremental() %}
+  where order_date > (select max(order_date) from {{ this }})
+{% endif %}</pre>
+            <p><code>{{ this }}</code> refers to the already-existing target table. <code>is_incremental()</code> is False on the first run (full load) and True on subsequent runs.</p>
+            <p><b>Ephemeral</b> — not created in the DB; injected as a CTE:</p>
+            <pre>{{ config(materialized='ephemeral') }}
+select customer_id, lower(email) as email
+from {{ ref('stg_customers') }}</pre>
+            <p><b>Rule of thumb:</b> Start with <code>view</code>. Switch to <code>table</code> if queries are slow. Use <code>incremental</code> for very large tables with reliable timestamps.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="badge badge-mid">🔧 Testing &amp; Docs</span> Data Quality &amp; Documentation</div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do dbt tests work? Explain generic tests vs singular tests.<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★★ Data quality — always asked</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>dbt tests validate your data quality. There are two types: <b>generic tests</b> (YAML-based) and <b>singular tests</b> (custom SQL files).</p>
+            <p><b>Generic Tests</b> — defined in YAML, built-in and reusable:</p>
+            <pre>-- models/staging/schema.yml
+version: 2
+models:
+  - name: stg_orders
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+      - name: status
+        tests:
+          - accepted_values:
+              values: ['placed', 'shipped', 'cancelled']
+      - name: customer_id
+        tests:
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id</pre>
+            <p><b>Built-in generic tests:</b></p>
+            <pre>Test              | What it checks
+------------------|----------------------------------------
+not_null          | Column has no NULL values
+unique            | All values in column are unique
+accepted_values   | Values are from a fixed allowed list
+relationships     | Foreign key exists in another model</pre>
+            <p><b>Singular Tests</b> — custom SQL that returns failing rows:</p>
+            <pre>-- tests/assert_positive_order_amount.sql
+select *
+from {{ ref('fct_orders') }}
+where amount &lt; 0
+-- If this returns ANY rows, the test FAILS</pre>
+            <p><b>Run tests:</b></p>
+            <pre>dbt test                        # all tests
+dbt test --select stg_orders    # tests for one model
+dbt test --select tag:finance   # tests for tagged models</pre>
+            <p>Tests pass when the SQL returns zero rows, and fail when it returns any rows.</p>
+          </div>
+        </div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How does dbt documentation work? What is the DAG?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Documentation and lineage</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>dbt auto-generates documentation from your project including model descriptions, column descriptions, tests, sources, and a <b>lineage graph (DAG)</b>.</p>
+            <p><b>Add descriptions in YAML:</b></p>
+            <pre>version: 2
+models:
+  - name: fct_orders
+    description: "Final fact table with one row per order."
+    columns:
+      - name: order_id
+        description: "Unique identifier for each order."
+      - name: amount
+        description: "Order amount after null-filling."</pre>
+            <p><b>Generate and serve docs:</b></p>
+            <pre>dbt docs generate   # builds the docs site
+dbt docs serve      # opens docs in browser at localhost:8080</pre>
+            <p><b>DAG (Directed Acyclic Graph):</b> dbt builds a dependency graph from your <code>ref()</code> and <code>source()</code> calls. It shows exactly how data flows from sources through models to final marts.</p>
+            <pre>source: raw.orders
+    ↓
+stg_orders
+    ↓
+int_orders_with_customers  ← also uses stg_customers
+    ↓
+fct_orders
+    ↓
+exposure: Finance Dashboard</pre>
+            <p><b>Why docs matter:</b> The DAG answers "If I change this model, which dashboards break?" — critical for safe refactoring in large projects.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="badge badge-adv">🚀 Advanced</span> Snapshots, Macros &amp; Project Features</div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What are dbt snapshots and when do you use them?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ SCD Type 2 / historical tracking</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Snapshots</b> track historical changes in mutable source data — implementing <b>SCD Type 2</b> (Slowly Changing Dimensions) automatically.</p>
+            <p><b>Problem without snapshots:</b> If a customer changes their address, the source table only stores the current value. Old value is lost forever.</p>
+            <p><b>With snapshots:</b> dbt stores history by adding <code>dbt_valid_from</code> and <code>dbt_valid_to</code> columns.</p>
+            <pre>-- snapshots/customer_snapshot.sql
+{% snapshot customer_snapshot %}
+{{
+    config(
+      target_schema='snapshots',
+      unique_key='customer_id',
+      strategy='timestamp',
+      updated_at='updated_at'
+    )
+}}
+select * from {{ source('crm', 'customers') }}
+{% endsnapshot %}</pre>
+            <p><b>Run snapshots:</b></p>
+            <pre>dbt snapshot</pre>
+            <p><b>Two snapshot strategies:</b></p>
+            <pre>Strategy    | How it detects changes
+------------|---------------------------------------------
+timestamp   | Checks updated_at column for newer timestamp
+check       | Compares specific column values for any change</pre>
+            <p><b>Result table looks like:</b></p>
+            <pre>customer_id | address | dbt_valid_from | dbt_valid_to
+------------|---------|----------------|-------------------
+1           | Delhi   | 2025-01-01     | 2025-04-01
+1           | Mumbai  | 2025-04-01     | NULL  ← current</pre>
+            <p>Use snapshots when source tables are overwritten (mutable) and you need to preserve history for audit, SCD, or compliance requirements.</p>
+          </div>
+        </div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What are dbt macros and how do Jinja, seeds, and packages work?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Reusability and project structure</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Macros</b> are reusable SQL snippets written using Jinja templating — like functions in dbt.</p>
+            <pre>-- macros/clean_string.sql
+{% macro clean_string(column_name) %}
+    trim(lower({{ column_name }}))
+{% endmacro %}
+
+-- Use in a model:
+select customer_id, {{ clean_string('email') }} as cleaned_email
+from {{ ref('stg_customers') }}
+
+-- Compiles to:
+select customer_id, trim(lower(email)) as cleaned_email
+from analytics.dev.stg_customers</pre>
+            <p><b>Jinja in dbt</b> also supports loops, conditions, and variables:</p>
+            <pre>{% for status in ['placed', 'shipped', 'cancelled'] %}
+    sum(case when status = '{{ status }}' then 1 else 0 end) as {{ status }}_orders
+    {% if not loop.last %},{% endif %}
+{% endfor %}</pre>
+            <p><b>Seeds</b> — CSV files loaded into the warehouse as tables:</p>
+            <pre># seeds/country_codes.csv
+country_code,country_name
+IN,India
+US,United States
+
+# Run:
+dbt seed   → creates a table from the CSV</pre>
+            <p><b>Packages</b> — reusable dbt projects (like pip packages):</p>
+            <pre># packages.yml
+packages:
+  - package: dbt-labs/dbt_utils
+    version: 1.3.0
+
+dbt deps   # install packages</pre>
+            <p>Popular packages: <code>dbt_utils</code> (macros), <code>dbt_expectations</code> (extra tests), <code>dbt_audit_helper</code> (compare model outputs).</p>
+          </div>
+        </div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What are the most important dbt commands and how do you use selectors and tags?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★★ Practical day-to-day dbt usage</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Core dbt commands:</b></p>
+            <pre>Command             | Purpose
+--------------------|-------------------------------------------
+dbt init            | Create a new dbt project
+dbt debug           | Test warehouse connection
+dbt run             | Run all models (create views/tables)
+dbt test            | Run all data quality tests
+dbt build           | Run models + tests + seeds + snapshots
+dbt seed            | Load CSV seeds into warehouse
+dbt snapshot        | Run snapshot models
+dbt compile         | Compile SQL without executing
+dbt docs generate   | Build documentation site
+dbt docs serve      | Serve docs locally (localhost:8080)
+dbt deps            | Install packages from packages.yml
+dbt clean           | Remove compiled and target folders</pre>
+            <p><b>Typical workflow:</b></p>
+            <pre>dbt debug          # verify connection
+dbt deps           # install packages
+dbt seed           # load CSV lookups
+dbt run            # build all models
+dbt test           # validate data quality
+dbt docs generate  # build docs
+dbt docs serve     # view docs in browser</pre>
+            <p><b>Selectors</b> — run only specific models:</p>
+            <pre>dbt run --select fct_orders          # one model
+dbt run --select +fct_orders         # model + all its parents
+dbt run --select fct_orders+         # model + all its children
+dbt run --select +fct_orders+        # parents + model + children
+dbt run --select models/marts        # all models in a folder
+dbt run --select state:modified      # only changed models</pre>
+            <p><b>Tags</b> — group models for selective runs:</p>
+            <pre>-- In model SQL:
+{{ config(tags=['daily', 'finance']) }}
+
+-- Run by tag:
+dbt run --select tag:finance
+dbt run --select tag:daily</pre>
+            <p><code>dbt build</code> is the most useful single command in production — it runs models, tests, snapshots, and seeds together and stops on the first failure.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="badge badge-new">⚙️ Config</span> Project Structure &amp; Connection</div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is <code>dbt_project.yml</code> and what does the dbt project structure look like?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Project setup and configuration</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><code>dbt_project.yml</code> is the <b>main configuration file</b> required in every dbt project. It tells dbt the project name, model paths, materialization defaults, variable definitions, and more.</p>
+            <p><b>Typical dbt project structure:</b></p>
+            <pre>my_dbt_project/
+│
+├── dbt_project.yml          ← main config (required)
+├── packages.yml             ← external packages
+│
+├── models/
+│   ├── staging/
+│   │   ├── stg_customers.sql
+│   │   ├── stg_orders.sql
+│   │   └── sources.yml      ← source definitions
+│   ├── intermediate/
+│   │   └── int_orders_enriched.sql
+│   └── marts/
+│       ├── fct_orders.sql
+│       └── schema.yml       ← tests &amp; docs
+│
+├── seeds/                   ← CSV lookup files
+├── snapshots/               ← SCD Type 2 snapshots
+├── macros/                  ← reusable Jinja functions
+└── tests/                   ← singular test SQL files</pre>
+            <p><b>Example <code>dbt_project.yml</code>:</b></p>
+            <pre>name: 'my_dbt_project'
+version: '1.0.0'
+profile: 'my_dbt_profile'    # links to profiles.yml
+
+model-paths: ["models"]
+seed-paths:  ["seeds"]
+snapshot-paths: ["snapshots"]
+
+models:
+  my_dbt_project:
+    staging:
+      +materialized: view   # all staging models = view by default
+    marts:
+      +materialized: table  # all mart models = table by default
+
+vars:
+  start_date: '2025-01-01'</pre>
+            <p><b>Key rule:</b> Every dbt project MUST have a <code>dbt_project.yml</code> at the root. The <code>profile</code> key links to your <code>profiles.yml</code> connection settings.</p>
+          </div>
+        </div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is <code>profiles.yml</code> and how does dbt connect to a data warehouse?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Connection and environment setup</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><code>profiles.yml</code> stores <b>warehouse connection details</b> for dbt. It is kept outside the project directory (at <code>~/.dbt/profiles.yml</code>) so credentials are never checked into source control.</p>
+            <p><b>Simple definition:</b> <code>profiles.yml</code> tells dbt <i>where to run your SQL</i>.</p>
+            <pre># ~/.dbt/profiles.yml
+my_dbt_profile:
+  target: dev              # default target environment
+  outputs:
+    dev:
+      type: snowflake
+      account: my_account
+      user: my_user
+      password: "{{ env_var('DBT_PASSWORD') }}"  # use env var, not plain text
+      role: transformer
+      database: analytics
+      warehouse: compute_wh
+      schema: dev          # dev schema = safe sandbox
+      threads: 4
+
+    prod:
+      type: snowflake
+      account: my_account
+      user: svc_dbt_prod
+      password: "{{ env_var('DBT_PROD_PASSWORD') }}"
+      role: transformer
+      database: analytics
+      warehouse: compute_wh
+      schema: prod         # prod schema = live tables
+      threads: 8</pre>
+            <p><b>Key config items in profiles.yml:</b></p>
+            <pre>Field    | Purpose
+---------|--------------------------------------------
+target   | Which output to use by default (dev/prod)
+type     | Warehouse adapter (snowflake, bigquery, redshift, postgres...)
+schema   | Schema where dbt creates objects
+threads  | Parallel model execution count</pre>
+            <p>Switch targets at runtime: <code>dbt run --target prod</code></p>
+            <p>Verify your connection: <code>dbt debug</code></p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="badge badge-mid">🔀 Variables &amp; Env</span> Dynamic Configuration</div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">How do you use variables (<code>var()</code>) and environment variables (<code>env_var()</code>) in dbt?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Dynamic and secure configuration</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Variables</b> let you pass dynamic values into dbt models and macros. <b>Environment variables</b> keep secrets (passwords, tokens) out of your code.</p>
+            <p><b>1. dbt Variables — <code>var()</code></b></p>
+            <p>Define in <code>dbt_project.yml</code>:</p>
+            <pre>vars:
+  start_date: '2025-01-01'
+  environment: 'dev'</pre>
+            <p>Use in a model SQL:</p>
+            <pre>select *
+from {{ ref('stg_orders') }}
+where order_date >= '{{ var("start_date") }}'</pre>
+            <p>Override from the command line at runtime:</p>
+            <pre>dbt run --vars '{"start_date": "2025-04-01", "environment": "prod"}'</pre>
+            <p>Provide a default fallback:</p>
+            <pre>{{ var("start_date", "2024-01-01") }}  -- uses 2024-01-01 if not set</pre>
+            <p><b>2. Environment Variables — <code>env_var()</code></b></p>
+            <p>Use for secrets and environment-specific config. Works in <code>profiles.yml</code>, <code>dbt_project.yml</code>, sources YAML, and model SQL:</p>
+            <pre># In profiles.yml — keep passwords out of code
+password: "{{ env_var('DBT_PASSWORD') }}"
+
+# In model SQL — conditional logic per environment
+{% if env_var('DBT_ENV', 'dev') == 'prod' %}
+  select * from prod_table
+{% else %}
+  select * from dev_table limit 1000
+{% endif %}
+
+# With a default value (second argument)
+{{ env_var('DBT_SCHEMA', 'dev') }}</pre>
+            <p><b>Key difference:</b> <code>var()</code> is for business logic parameters (dates, flags). <code>env_var()</code> is for secrets and infrastructure config that changes per environment.</p>
+          </div>
+        </div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What are dbt hooks (<code>pre-hook</code> and <code>post-hook</code>) and when do you use them?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★☆☆ Audit logging and warehouse-specific commands</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Hooks</b> let you run SQL statements <b>before</b> or <b>after</b> dbt builds a model. They are used for audit logging, permission grants, cleanup, or warehouse-specific commands that don't fit inside a SELECT statement.</p>
+            <p><b>Pre-hook</b> — runs SQL before the model is built:</p>
+            <pre>{{ config(
+    pre_hook="delete from audit_log where model_name = 'fct_orders'"
+) }}
+
+select * from {{ ref('stg_orders') }}</pre>
+            <p><b>Post-hook</b> — runs SQL after the model is built:</p>
+            <pre>{{ config(
+    post_hook=[
+      "insert into audit_log values ('fct_orders', current_timestamp)",
+      "grant select on {{ this }} to role reporter"
+    ]
+) }}
+
+select * from {{ ref('stg_orders') }}</pre>
+            <p><b>Global hooks in <code>dbt_project.yml</code></b> (apply to all models):</p>
+            <pre>models:
+  my_project:
+    +post-hook:
+      - "grant select on {{ this }} to role analyst"</pre>
+            <p><b>Common use cases for hooks:</b></p>
+            <pre>Use Case              | Hook Type
+----------------------|----------
+Audit logging         | post-hook
+Grant permissions     | post-hook
+Delete before insert  | pre-hook
+Run ANALYZE/VACUUM    | post-hook
+Truncate staging tables | pre-hook
+Warehouse commands    | pre/post-hook</pre>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="badge badge-adv">🌐 Governance</span> Exposures, Metrics &amp; Python Models</div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What are dbt Exposures and why do they matter for impact analysis?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★☆☆ Downstream dependency documentation</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Exposures</b> describe downstream consumers of your dbt models — dashboards, ML models, reports, apps, or notebooks. They extend the lineage graph beyond dbt itself.</p>
+            <p><b>Define an exposure in YAML:</b></p>
+            <pre>exposures:
+  - name: weekly_revenue_dashboard
+    type: dashboard          # dashboard | ml | notebook | analysis | application
+    maturity: high           # low | medium | high
+    url: https://bi.example.com/dashboard/123
+    description: "Finance team dashboard for weekly revenue reporting."
+    depends_on:
+      - ref('fct_orders')
+      - ref('dim_customers')
+    owner:
+      name: Finance Team
+      email: finance@example.com</pre>
+            <p><b>Why exposures matter — impact analysis:</b></p>
+            <pre>Question: "If I change fct_orders, what breaks?"
+
+Without exposures:
+  You don't know. You check Slack, email stakeholders, hope for the best.
+
+With exposures:
+  dbt docs shows: fct_orders → weekly_revenue_dashboard (Finance Team)
+  You know exactly who to notify before making the change.</pre>
+            <p><b>Exposure types:</b></p>
+            <pre>Type        | Example
+------------|-----------------------------
+dashboard   | Tableau, Looker, Metabase
+notebook    | Jupyter, Databricks notebook
+ml          | ML feature pipeline, model
+analysis    | Ad-hoc SQL report
+application | Internal app reading the mart</pre>
+            <p>Exposures appear in the dbt docs lineage graph and help data teams practice <b>data contract</b> thinking — knowing who depends on what before making breaking changes.</p>
+          </div>
+        </div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What is the dbt Semantic Layer and how do you define metrics?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★★☆ Governed metrics and semantic layer</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p>The <b>dbt Semantic Layer</b> lets you define business metrics centrally in dbt so every team uses the same definition everywhere — eliminating the "Finance revenue ≠ Sales revenue ≠ Product revenue" problem.</p>
+            <p><b>The problem without a semantic layer:</b></p>
+            <pre>Finance analyst SQL:  sum(amount) where status = 'paid'          → $1.2M
+Sales analyst SQL:    sum(order_value) where closed = true        → $1.4M
+Product analyst SQL:  sum(gmv) where event = 'purchase'          → $1.1M
+
+Three teams, three "revenue" numbers. Stakeholders confused.</pre>
+            <p><b>Define a metric in dbt (MetricFlow):</b></p>
+            <pre># models/metrics/revenue.yml
+metrics:
+  - name: total_revenue
+    description: "Total revenue from completed orders."
+    type: simple
+    label: Total Revenue
+    type_params:
+      measure: revenue      # points to a measure defined on a semantic model
+
+semantic_models:
+  - name: orders
+    model: ref('fct_orders')
+    measures:
+      - name: revenue
+        agg: sum
+        expr: amount
+    dimensions:
+      - name: order_date
+        type: time
+        type_params:
+          time_granularity: day
+      - name: customer_region
+        type: categorical</pre>
+            <p><b>Query the semantic layer:</b></p>
+            <pre>dbt sl query --metrics total_revenue --group-by order_date__month
+dbt sl query --metrics total_revenue --group-by customer_region</pre>
+            <p><b>Why it matters:</b></p>
+            <pre>Without Semantic Layer   | With Semantic Layer
+-------------------------|----------------------------
+Each team writes own SQL | One metric definition in dbt
+Inconsistent numbers     | Consistent across all tools
+Hard to audit            | Version-controlled metric logic
+BI tool lock-in          | Query from any connected tool</pre>
+          </div>
+        </div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What are dbt Python models and when should you use them over SQL models?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★☆☆ Python-based transformations</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>Python models</b> are <code>.py</code> files (instead of <code>.sql</code>) that use a <code>model()</code> function. They run on supported platforms like Snowpark (Snowflake), PySpark (Databricks, EMR), or BigQuery DataFrames.</p>
+            <p><b>Basic structure of a Python model:</b></p>
+            <pre># models/customer_features.py
+
+def model(dbt, session):
+    dbt.config(materialized="table")
+
+    # Reference other dbt models — same as ref() in SQL
+    orders = dbt.ref("fct_orders")
+
+    # Apply Python / DataFrame transformations
+    result = (
+        orders
+        .groupBy("customer_id")
+        .agg({"amount": "sum", "order_id": "count"})
+        .withColumnRenamed("sum(amount)", "total_spent")
+        .withColumnRenamed("count(order_id)", "order_count")
+    )
+
+    return result   # dbt materializes this as a table</pre>
+            <p><b>You can also reference SQL models from Python models and vice versa:</b></p>
+            <pre>def model(dbt, session):
+    dbt.config(materialized="table")
+    stg = dbt.ref("stg_orders")   # reference a SQL model
+    src = dbt.source("shopify", "events")  # reference a source
+    return stg.join(src, "order_id")</pre>
+            <p><b>When to use Python models vs SQL models:</b></p>
+            <pre>Use SQL models for:              | Use Python models for:
+--------------------------------|--------------------------------
+Standard aggregations/joins     | ML feature engineering
+Simple transformations          | Complex statistical logic
+Most analytics use cases        | Python library usage (sklearn, etc.)
+Faster execution                | DataFrame-style operations
+Better Catalyst optimization    | Data science workflows</pre>
+            <p><b>Rule of thumb:</b> Prefer SQL models for 90% of analytics transformations. Use Python models only when the logic genuinely requires Python libraries or cannot be expressed in SQL.</p>
+          </div>
+        </div>
+
+        <div class="q-card" onclick="toggle(this)">
+          <div class="q-header">
+            <div class="q-left">
+              <div class="q-text">What are dbt Unit Tests and how do they differ from data tests?<span class="new-badge">NEW</span></div>
+              <div class="freq">★★★☆☆ Testing model logic before running on real data</div>
+            </div>
+            <div class="q-toggle">+</div>
+          </div>
+          <div class="q-answer">
+            <p><b>dbt Unit Tests</b> (added in dbt 1.8) test your <b>model logic</b> using small, hardcoded input and expected output data — without touching the actual warehouse tables. They catch SQL logic bugs early.</p>
+            <p><b>Difference from data tests:</b></p>
+            <pre>Test Type    | What it tests                  | When it runs
+-------------|--------------------------------|------------------
+Data test    | Data quality in the warehouse  | After dbt run
+Unit test    | SQL transformation logic       | Before/during dbt build
+             | (does the SQL produce the      |
+             |  right output for given input) |</pre>
+            <p><b>Example: unit test for null-filling logic</b></p>
+            <p>The model <code>stg_orders.sql</code> uses <code>coalesce(amount, 0)</code>. Write a unit test to verify this:</p>
+            <pre># models/staging/schema.yml
+unit_tests:
+  - name: test_null_amount_filled_with_zero
+    model: stg_orders
+    given:
+      - input: source('shopify', 'orders')
+        rows:
+          - {order_id: 1, customer_id: 101, amount: 500, order_date: "2025-01-01"}
+          - {order_id: 2, customer_id: 102, amount: null, order_date: "2025-01-02"}
+    expect:
+      rows:
+        - {order_id: 1, amount: 500}
+        - {order_id: 2, amount: 0}    ← verifies coalesce worked</pre>
+            <p><b>Run unit tests:</b></p>
+            <pre>dbt test --select stg_orders   # runs both data tests AND unit tests
+dbt build --select stg_orders  # also runs unit tests as part of build</pre>
+            <p><b>When to write unit tests:</b></p>
+            <pre>✅ Complex CASE WHEN logic with many branches
+✅ Date arithmetic and edge cases (month boundaries, null dates)
+✅ Incremental model filter logic (is_incremental() block)
+✅ Business rules that are hard to validate on real data
+✅ Macros used across many models</pre>
+            <p>Unit tests are the fastest feedback loop in dbt — they don't need a warehouse connection to run, making them ideal for CI/CD pipelines.</p>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- end dbt panel -->
 
   </div>
 
